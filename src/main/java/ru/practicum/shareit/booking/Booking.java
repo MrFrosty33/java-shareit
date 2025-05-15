@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Data
 @Builder(toBuilder = true)
 public class Booking {
-    @NotNull(message = "ошибка валидации, id не может быть null")
     private Long id;
 
     @NotNull(message = "ошибка валидации, startDate не может быть null")

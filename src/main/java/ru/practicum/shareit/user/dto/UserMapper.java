@@ -1,13 +1,15 @@
 package ru.practicum.shareit.user.dto;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.User;
 
+@Component
 public class UserMapper {
 
     public UserDto toDto(User user) {
         return UserDto.builder()
                 .name(user.getName())
-                .items(user.getItems().keySet().stream().toList())
+                .email(user.getEmail())
                 .build();
     }
 }

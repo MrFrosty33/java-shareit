@@ -15,7 +15,6 @@ import java.util.Map;
 @Data
 @Builder(toBuilder = true)
 public class User {
-    @NotNull(message = "ошибка валидации, id не может быть null")
     private Long id;
 
     @NotBlank(message = "ошибка валидации, name не может быть null / Blank")

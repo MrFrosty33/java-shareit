@@ -3,6 +3,8 @@ package ru.practicum.shareit.request;
 import java.util.List;
 
 public interface ItemRequestStorage {
+    Long nextId();
+
     ItemRequest get(Long id);
 
     List<ItemRequest> getAll();
@@ -14,4 +16,6 @@ public interface ItemRequestStorage {
     boolean delete(Long id);
 
     boolean deleteAll();
+
+    void validateExists(Long id);
 }

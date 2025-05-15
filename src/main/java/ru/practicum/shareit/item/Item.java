@@ -10,7 +10,6 @@ import lombok.Getter;
 @Data
 @Builder(toBuilder = true)
 public class Item {
-    @NotNull(message = "ошибка валидации, id не может быть null")
     private Long id;
 
     // Здесь и далее: стоит ли ограничивать размер текстовых полей здесь, или же это можно опустить на БД?

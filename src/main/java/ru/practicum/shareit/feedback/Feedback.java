@@ -14,7 +14,6 @@ import lombok.Data;
 @Data
 @Builder(toBuilder = true)
 public class Feedback {
-    @NotNull(message = "ошибка валидации, id не может быть null")
     private Long id;
 
     @NotNull(message = "ошибка валидации, ownerId не может быть null")
