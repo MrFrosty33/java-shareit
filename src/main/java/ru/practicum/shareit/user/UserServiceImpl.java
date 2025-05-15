@@ -18,29 +18,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(Long id) {
         UserDto result = userMapper.toDto(userStorage.get(id));
-        log.info("Результат получения User по id был приведён в UserDto объект");
+        log.info("Результат получения User по id был приведён в UserDto объект и передан в контроллер");
         return result;
     }
 
     @Override
     public List<UserDto> getAll() {
         List<UserDto> result = userStorage.getAll().stream().map(userMapper::toDto).toList();
-        log.info("Результат полечения всех User был приведён в список UserDto объектов");
+        log.info("Результат полечения всех User был приведён в список UserDto объектов и передан в контроллер");
         return result;
     }
 
     @Override
     public UserDto save(User user) {
+        //TODO проверка на уникальность email, возврат кода 409 / 500
         user.setId(userStorage.nextId());
         UserDto result = userMapper.toDto(userStorage.save(user));
-        log.info("Результат сохранения User был приведён в UserDto объект");
+        log.info("Результат сохранения User был приведён в UserDto объект и передан в контроллер");
         return result;
     }
 
     @Override
     public UserDto update(User user) {
         UserDto result = userMapper.toDto(userStorage.update(user));
-        log.info("Результат обновления User был приведён в UserDto объект");
+        log.info("Результат обновления User был приведён в UserDto объект и передан в контроллер");
         return result;
     }
 

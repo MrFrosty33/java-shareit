@@ -7,6 +7,8 @@ public interface UserStorage {
 
     User get(Long id);
 
+    User getByEmail(String email);
+
     List<User> getAll();
 
     User save(User user);
@@ -18,4 +20,6 @@ public interface UserStorage {
     boolean deleteAll();
 
     void validateExists(Long id);
+
+    void validateUniqueEmail(String email);
 }

@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "ru.yandex.practicum.filmorate")
+@RestControllerAdvice(basePackages = "ru.practicum.shareit")
 public class ApplicationExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(NotFoundException e) {
-        // IDE сетует на Similar log messages. Стоит ли с этим что-то делать, улучшать?
         log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
                 e.getClass().getSimpleName(), e.getMessage());
         return new ErrorResponse(e.getMessage());

@@ -2,11 +2,13 @@ package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -26,6 +28,13 @@ public class UserStorageImpl implements UserStorage {
     }
 
     @Override
+    public User getByEmail(String email) {
+        Optional<User> found =
+                inMemoryStorage.values().stream().filter(user -> user.getEmail().equals(email)).findFirst();
+        return found.orElse(null);
+    }
+
+    @Override
     public List<User> getAll() {
         log.info("Получен список всех User");
         return inMemoryStorage.values().stream().toList();
@@ -33,6 +42,7 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User save(User user) {
+        validateUniqueEmail(user.getEmail());
         Long id = user.getId();
 
         inMemoryStorage.put(id, user);
@@ -43,10 +53,18 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User update(User user) {
+        User changedUser = inMemoryStorage.get(user.getId());
         Long id = user.getId();
 
-        validateExists(user.getId());
-        inMemoryStorage.replace(id, user);
+        validateExists(id);
+        //TODO проверки на isBlank?
+        if (user.getEmail() != null) {
+            changedUser.setEmail(user.getEmail());
+        }
+        if (user.getName() != null) {
+            changedUser.setName(user.getName());
+        }
+        inMemoryStorage.replace(id, changedUser);
         log.info("Обновлён User с id: {}", id);
         validateExists(id);
         return user;
@@ -70,8 +88,16 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public void validateExists(Long id) {
         if (!inMemoryStorage.containsKey(id)) {
-            log.info("User с id: {} ", id);
+            log.info("Попытка найти User с id: {}", id);
             throw new NotFoundException("User с id: " + id + " не найден");
+        }
+    }
+
+    @Override
+    public void validateUniqueEmail(String email) {
+        if (inMemoryStorage.values().stream().anyMatch(user -> user.getEmail().equals(email))) {
+            log.info("Попытка добавить нового пользователя с уже привязанным email: {}", email);
+            throw new ConflictException("Email: " + email + " уже привязан");
         }
     }
 }

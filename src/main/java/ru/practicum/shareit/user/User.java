@@ -17,6 +17,7 @@ public class User {
     @Size(max = 100, message = "ошшибка валидации, длина name не может превышать 100 символов")
     private String name;
 
+    @NotBlank(message = "ошибка валидации, email не может быть null / Blank")
     @Email(message = "ошибка валидации, email должен быть действительным")
     private String email;
 }
