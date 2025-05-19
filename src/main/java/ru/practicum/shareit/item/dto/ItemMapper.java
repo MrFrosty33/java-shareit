@@ -20,6 +20,19 @@ public class ItemMapper {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
+                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
+                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
+                .availability(itemDto.getAvailability())
+                .build();
+    }
+
+    public Item fromDto(ItemDto itemDto, Long id) {
+        return Item.builder()
+                .id(id)
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
+                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
                 .availability(itemDto.getAvailability())
                 .build();
     }

@@ -21,12 +21,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping(path = "/users")
-@Slf4j
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable @NotNull @Positive Long id) {
+    public UserDto get(@PathVariable
+                       @NotNull(message = "ошибка валидации, id не может быть null")
+                       @Positive(message = "ошибка валидации, id должно быть положительным числом")
+                       Long id) {
         return userService.get(id);
     }
 
@@ -46,7 +48,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable @NotNull @Positive Long id) {
+    public String delete(@PathVariable
+                         @NotNull(message = "ошибка валидации, id не может быть null")
+                         @Positive(message = "ошибка валидации, id должно быть положительным числом")
+                         Long id) {
         userService.delete(id);
         return "Ok";
     }

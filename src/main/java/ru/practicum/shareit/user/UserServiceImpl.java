@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(User user) {
-        //TODO проверка на уникальность email, возврат кода 409 / 500
         user.setId(userStorage.nextId());
         UserDto result = userMapper.toDto(userStorage.save(user));
         log.info("Результат сохранения User был приведён в UserDto объект и передан в контроллер");

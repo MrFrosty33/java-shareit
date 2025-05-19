@@ -12,4 +12,12 @@ public class UserMapper {
                 .email(user.getEmail())
                 .build();
     }
+
+    public User fromDto(UserDto userDto) {
+        //todo как подцеплять id? и надо ли вообще?
+        return User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
+    }
 }

@@ -3,50 +3,90 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.NotFoundException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+
 public class ItemStorageImpl implements ItemStorage {
+    private final Map<Long, Item> inMemoryStorage = new HashMap<>();
+
     @Override
     public Long nextId() {
-        return 0L;
+        return inMemoryStorage.size() + 1L;
     }
 
     @Override
     public Item get(Long id) {
-        return null;
+        validateExists(id);
+        log.info("Получен Item с id: {}", id);
+        return inMemoryStorage.get(id);
     }
 
     @Override
     public List<Item> getAll() {
-        return List.of();
+        log.info("Получен список всех Item");
+        return inMemoryStorage.values().stream().toList();
     }
 
     @Override
     public Item save(Item item) {
-        return null;
+        Long id = item.getId();
+
+        inMemoryStorage.put(id, item);
+        log.info("Сохранён Item с id: {}", id);
+        validateExists(id); // проверка, верно ли сохранился
+        return item;
     }
 
     @Override
     public Item update(Item item) {
-        return null;
+        Item updatedItem = inMemoryStorage.get(item.getId());
+        Long id = item.getId();
+
+        validateExists(id);
+        //TODO проверки на isBlank?
+        if(item.getName() != null && !item.getName().equals(updatedItem.getName())) {
+            updatedItem.setName(item.getName());
+        }
+        if(item.getDescription() != null && !item.getDescription().equals(updatedItem.getDescription())) {
+            updatedItem.setDescription(item.getDescription());
+        }
+        if(item.getAvailability() != null && !item.getAvailability().equals(updatedItem.getAvailability())) {
+            updatedItem.setAvailability(item.getAvailability());
+        }
+
+        inMemoryStorage.replace(id, updatedItem);
+        log.info("Обновлён Item с id: {}", id);
+        validateExists(id);
+        return updatedItem;
     }
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        validateExists(id);
+        inMemoryStorage.remove(id);
+        log.info("Удалён Item с id: {}", id);
+        return true;
     }
 
     @Override
     public boolean deleteAll() {
-        return false;
+        inMemoryStorage.clear();
+        log.info("Очищено хранилище Item");
+        return true;
     }
 
     @Override
     public void validateExists(Long id) {
-
+        if (!inMemoryStorage.containsKey(id)) {
+            log.info("Попытка найти Item с id: {}", id);
+            throw new NotFoundException("Item с id: " + id + " не найден");
+        }
     }
 }

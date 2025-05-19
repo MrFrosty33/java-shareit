@@ -53,21 +53,21 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User update(User user) {
-        User changedUser = inMemoryStorage.get(user.getId());
+        User updatedUser = inMemoryStorage.get(user.getId());
         Long id = user.getId();
 
         validateExists(id);
         //TODO проверки на isBlank?
-        if (user.getEmail() != null) {
-            changedUser.setEmail(user.getEmail());
+        if (user.getEmail() != null && !user.getEmail().equals(updatedUser.getEmail())) {
+            updatedUser.setEmail(user.getEmail());
         }
-        if (user.getName() != null) {
-            changedUser.setName(user.getName());
+        if (user.getName() != null && !user.getName().equals(updatedUser.getName())) {
+            updatedUser.setName(user.getName());
         }
-        inMemoryStorage.replace(id, changedUser);
+        inMemoryStorage.replace(id, updatedUser);
         log.info("Обновлён User с id: {}", id);
         validateExists(id);
-        return user;
+        return updatedUser;
     }
 
     @Override

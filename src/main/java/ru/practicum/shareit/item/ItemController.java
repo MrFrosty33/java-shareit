@@ -3,6 +3,9 @@ package ru.practicum.shareit.item;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -13,44 +16,55 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemUpdate;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping("/items")
 public class ItemController {
+    private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable @NotNull @Positive Long id) {
-        return null;
+    public ItemDto get(@PathVariable
+                       @NotNull(message = "ошибка валидации, id не может быть null")
+                       @Positive(message = "ошибка валидации, id должно быть положительным числом")
+                       Long id) {
+        return itemService.get(id);
     }
 
     @GetMapping
-    public List<UserDto> getAll() {
-        return null;
+    public List<ItemDto> getAll() {
+        return itemService.getAll();
     }
 
     @PostMapping
-    public UserDto save(@Valid @RequestBody ItemDto itemDto,
-                        @RequestHeader("X-Sharer-User-Id") @NotNull @Positive Long userId) {
-        return null;
+    public ItemDto save(@Valid @RequestBody ItemDto itemDto,
+                        @RequestHeader("X-Sharer-User-Id")
+                        @NotNull(message = "ошибка валидации, userId не может быть null")
+                        @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                        Long userId) {
+        return itemService.save(itemDto, userId);
     }
 
     @PatchMapping
-    public UserDto update(@Valid @RequestBody ItemUpdate item) {
+    public ItemDto update(@Valid @RequestBody Item item) {
         //TODO редактировать может только владелец вещи
-        return null;
+        return itemService.update(item);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable @NotNull @Positive Long id) {
+    public String delete(@PathVariable
+                         @NotNull(message = "ошибка валидации, id не может быть null")
+                         @Positive(message = "ошибка валидации, id должно быть положительным числом")
+                         Long id) {
+        itemService.delete(id);
         return "Ok";
     }
 
     @DeleteMapping
     public String deleteAll() {
+        itemService.deleteAll();
         return "Ok";
     }
 

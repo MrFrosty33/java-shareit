@@ -16,4 +16,9 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .build();
     }
+
+    public Booking fromDto(BookingDto booking) {
+        //todo
+        return null;
+    }
 }

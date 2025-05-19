@@ -9,9 +9,9 @@ public interface ItemService {
 
     List<ItemDto> getAll();
 
-    Item save(ItemDto itemDto, Long userId);
+    ItemDto save(ItemDto itemDto, Long userId);
 
-    Item update(Item item);
+    ItemDto update(Item item);
 
     boolean delete(Long id);
 
