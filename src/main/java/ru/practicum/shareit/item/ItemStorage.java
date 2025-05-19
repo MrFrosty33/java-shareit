@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.dto.ItemDto;
+
 import java.util.List;
 
 public interface ItemStorage {
@@ -8,6 +10,7 @@ public interface ItemStorage {
     Item get(Long id);
 
     List<Item> getAll();
+
 
     Item save(Item item);
 

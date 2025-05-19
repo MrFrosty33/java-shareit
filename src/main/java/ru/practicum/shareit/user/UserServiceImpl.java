@@ -18,14 +18,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(Long id) {
         UserDto result = userMapper.toDto(userStorage.get(id));
-        log.info("Результат получения User по id был приведён в UserDto объект и передан в контроллер");
+        log.info("Результат получения User по id был приведён в UserDto объект и передан далее");
         return result;
     }
 
     @Override
     public List<UserDto> getAll() {
         List<UserDto> result = userStorage.getAll().stream().map(userMapper::toDto).toList();
-        log.info("Результат полечения всех User был приведён в список UserDto объектов и передан в контроллер");
+        log.info("Результат получения всех User был приведён в список UserDto объектов и передан далее");
         return result;
     }
 

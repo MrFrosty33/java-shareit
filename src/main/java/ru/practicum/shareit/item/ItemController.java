@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -36,6 +38,13 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> getAll() {
         return itemService.getAll();
+    }
+
+    @GetMapping("/search")
+    public List<ItemDto> search(@RequestParam
+                                @NotBlank(message = "ошибка валидации, userId не может быть null / Blank")
+                                String text) {
+        return itemService.search(text);
     }
 
     @PostMapping

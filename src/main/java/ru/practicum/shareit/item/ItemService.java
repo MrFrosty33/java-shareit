@@ -9,6 +9,8 @@ public interface ItemService {
 
     List<ItemDto> getAll();
 
+    List<ItemDto> search(String text);
+
     ItemDto save(ItemDto itemDto, Long userId);
 
     ItemDto update(Item item);

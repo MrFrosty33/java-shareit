@@ -21,14 +21,24 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto get(Long id) {
         ItemDto result = itemMapper.toDto(itemStorage.get(id));
-        log.info("Результат получения Item по id был приведён в ItemDto объект и передан в контроллер");
+        log.info("Результат получения Item по id был приведён в ItemDto объект и передан далее");
         return result;
     }
 
     @Override
     public List<ItemDto> getAll() {
         List<ItemDto> result = itemStorage.getAll().stream().map(itemMapper::toDto).toList();
-        log.info("Результат получения всех Item был приведён в список ItemDto объектов и передан в контроллер");
+        log.info("Результат получения всех Item был приведён в список ItemDto объектов и передан далее");
+        return result;
+    }
+
+    @Override
+    public List<ItemDto> search(String text) {
+        List<ItemDto> result = getAll().stream()
+                .filter(itemDto ->
+                        itemDto.getDescription().contains(text) || itemDto.getName().contains(text)).toList();
+        log.info("Список всех ItemDto был отфильтрован, " +
+                "содержащие text: {} в имени или описании экземпляры были переданы далее", text);
         return result;
     }
 
