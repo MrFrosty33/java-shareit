@@ -30,8 +30,12 @@ public class ItemController {
     public ItemDto get(@PathVariable
                        @NotNull(message = "ошибка валидации, id не может быть null")
                        @Positive(message = "ошибка валидации, id должно быть положительным числом")
-                       Long id) {
-        return itemService.get(id);
+                           Long id,
+                       @RequestHeader("X-Sharer-User-Id")
+                           @NotNull(message = "ошибка валидации, userId не может быть null")
+                           @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                           Long userId) {
+        return itemService.get(id, userId);
     }
 
     @GetMapping
@@ -47,26 +51,34 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto save(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto save(@Valid @RequestBody Item item,
                         @RequestHeader("X-Sharer-User-Id")
                         @NotNull(message = "ошибка валидации, userId не может быть null")
                         @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                         Long userId) {
-        return itemService.save(itemDto, userId);
+        return itemService.save(item, userId);
     }
 
     @PatchMapping
-    public ItemDto update(@Valid @RequestBody Item item) {
+    public ItemDto update(@Valid @RequestBody Item item,
+                          @RequestHeader("X-Sharer-User-Id")
+                          @NotNull(message = "ошибка валидации, userId не может быть null")
+                          @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                          Long userId) {
         //TODO редактировать может только владелец вещи
-        return itemService.update(item);
+        return itemService.update(item, userId);
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable
                          @NotNull(message = "ошибка валидации, id не может быть null")
                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
-                         Long id) {
-        itemService.delete(id);
+                             Long id,
+                         @RequestHeader("X-Sharer-User-Id")
+                             @NotNull(message = "ошибка валидации, userId не может быть null")
+                             @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                             Long userId) {
+        itemService.delete(id, userId);
         return "Ok";
     }
 

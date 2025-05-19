@@ -19,8 +19,16 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto get(Long id) {
+    public ItemDto get(Long id, Long userId) {
+        userStorage.validateExists(userId);
+
         ItemDto result = itemMapper.toDto(itemStorage.get(id));
+        // если другой владелец, то информацию о предмете мы не провозглашаем?
+        if (!result.getOwnerId().equals(userId)) {
+            log.info("Попытка получить Item, но ownerId: {} не сходится с userId: {}", result.getOwnerId(), userId);
+            throw new ConflictException("ownerId: " + result.getOwnerId() +
+                    " отличается от переданного userId: " + userId);
+        }
         log.info("Результат получения Item по id был приведён в ItemDto объект и передан далее");
         return result;
     }
@@ -43,29 +51,43 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto save(ItemDto itemDto, Long userId) {
+    public ItemDto save(Item item, Long userId) {
         userStorage.validateExists(userId);
-        // полученный userId стоит сверить с ownerId у itemDto
-        if (!itemDto.getOwnerId().equals(userId)) {
-            log.info("Попытка сохранить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
-            throw new ConflictException("ownerId: " + itemDto.getOwnerId() + " отличается от переданного userId: " + userId);
+        if (!item.getOwnerId().equals(userId)) {
+            log.info("Попытка сохранить Item, но ownerId: {} не сходится с userId: {}", item.getOwnerId(), userId);
+            throw new ConflictException("ownerId: " + item.getOwnerId() +
+                    " отличается от переданного userId: " + userId);
         }
 
-        Item saved = itemStorage.save(itemMapper.fromDto(itemDto, itemStorage.nextId()));
-        ItemDto result = itemMapper.toDto(saved);
+        ItemDto result = itemMapper.toDto(itemStorage.save(item));
         log.info("Результат сохранения Item был приведён в ItemDto объект и передан в контроллер");
         return result;
     }
 
     @Override
-    public ItemDto update(Item item) {
+    public ItemDto update(Item item, Long userId) {
+        userStorage.validateExists(userId);
+        if (!item.getOwnerId().equals(userId)) {
+            log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", item.getOwnerId(), userId);
+            throw new ConflictException("ownerId: " + item.getOwnerId() +
+                    " отличается от переданного userId: " + userId);
+        }
+
         ItemDto result = itemMapper.toDto(itemStorage.update(item));
         log.info("Результат обновления Item был приведён в ItemDto объект и передан в контроллер");
         return result;
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(Long id, Long userId) {
+        userStorage.validateExists(userId);
+        Item item = itemStorage.get(id);
+
+        if (!item.getOwnerId().equals(userId)) {
+            log.info("Попытка удалить Item, но ownerId: {} не сходится с userId: {}", item.getOwnerId(), userId);
+            throw new ConflictException("ownerId: " + item.getOwnerId() +
+                    " отличается от переданного userId: " + userId);
+        }
         return itemStorage.delete(id);
     }
 
