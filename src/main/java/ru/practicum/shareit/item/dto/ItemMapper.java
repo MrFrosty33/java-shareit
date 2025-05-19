@@ -15,4 +15,12 @@ public class ItemMapper {
                 .availability(item.getAvailability())
                 .build();
     }
+
+    public Item fromDto(ItemDto itemDto) {
+        return Item.builder()
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .availability(itemDto.getAvailability())
+                .build();
+    }
 }

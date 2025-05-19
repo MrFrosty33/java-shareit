@@ -9,7 +9,7 @@ public interface ItemService {
 
     List<ItemDto> getAll();
 
-    Item save(Item item);
+    Item save(ItemDto itemDto, Long userId);
 
     Item update(Item item);
 
