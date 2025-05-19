@@ -37,13 +37,13 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto save(@Valid @RequestBody User user) {
-        return userService.save(user);
+    public UserDto save(@Valid @RequestBody UserDto userDto) {
+        return userService.save(userDto);
     }
 
     @PatchMapping
-    public UserDto update(@Valid @RequestBody User user) {
-        return userService.update(user);
+    public UserDto update(@Valid @RequestBody UserDto userDto) {
+        return userService.update(userDto);
     }
 
     @DeleteMapping("/{id}")

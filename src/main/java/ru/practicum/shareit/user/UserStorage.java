@@ -3,8 +3,6 @@ package ru.practicum.shareit.user;
 import java.util.List;
 
 public interface UserStorage {
-    Long nextId();
-
     User get(Long id);
 
     User getByEmail(String email);

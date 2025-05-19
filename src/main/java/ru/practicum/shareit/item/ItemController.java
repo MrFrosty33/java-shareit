@@ -51,22 +51,21 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto save(@Valid @RequestBody Item item,
+    public ItemDto save(@Valid @RequestBody ItemDto itemDto,
                         @RequestHeader("X-Sharer-User-Id")
                         @NotNull(message = "ошибка валидации, userId не может быть null")
                         @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                         Long userId) {
-        return itemService.save(item, userId);
+        return itemService.save(itemDto, userId);
     }
 
     @PatchMapping
-    public ItemDto update(@Valid @RequestBody Item item,
+    public ItemDto update(@Valid @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id")
                           @NotNull(message = "ошибка валидации, userId не может быть null")
                           @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                           Long userId) {
-        //TODO редактировать может только владелец вещи
-        return itemService.update(item, userId);
+        return itemService.update(itemDto, userId);
     }
 
     @DeleteMapping("/{id}")

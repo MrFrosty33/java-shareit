@@ -11,7 +11,6 @@ import lombok.Getter;
 @Data
 @Builder(toBuilder = true)
 public class Item {
-    //TODO подумать над @NotNull и прочими аннотациями, где надо, где нет
     @Positive(message = "ошибка валидации, id должно быть положительным числом")
     private Long id;
 

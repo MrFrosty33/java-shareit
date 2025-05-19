@@ -14,11 +14,7 @@ import java.util.Optional;
 @Slf4j
 public class UserStorageImpl implements UserStorage {
     private final Map<Long, User> inMemoryStorage = new HashMap<>();
-
-    @Override
-    public Long nextId() {
-        return inMemoryStorage.size() + 1L;
-    }
+    private Long nextId = 1L;
 
     @Override
     public User get(Long id) {
@@ -43,11 +39,11 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public User save(User user) {
         validateUniqueEmail(user.getEmail());
-        Long id = user.getId();
 
-        inMemoryStorage.put(id, user);
-        log.info("Сохранён User с id: {}", id);
-        validateExists(id); // проверка, верно ли сохранился
+        inMemoryStorage.put(nextId, user);
+        log.info("Сохранён User с id: {}", nextId);
+        validateExists(nextId); // проверка, верно ли сохранился
+        nextId++;
         return user;
     }
 
@@ -57,7 +53,6 @@ public class UserStorageImpl implements UserStorage {
         Long id = user.getId();
 
         validateExists(id);
-        //TODO проверки на isBlank?
         if (user.getEmail() != null && !user.getEmail().equals(updatedUser.getEmail())) {
             updatedUser.setEmail(user.getEmail());
         }
@@ -75,6 +70,7 @@ public class UserStorageImpl implements UserStorage {
         validateExists(id);
         inMemoryStorage.remove(id);
         log.info("Удалён User с id: {}", id);
+        nextId--;
         return true;
     }
 
@@ -82,6 +78,7 @@ public class UserStorageImpl implements UserStorage {
     public boolean deleteAll() {
         inMemoryStorage.clear();
         log.info("Очищено хранилище User");
+        nextId = 1L;
         return true;
     }
 

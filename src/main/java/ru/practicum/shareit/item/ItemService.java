@@ -11,9 +11,9 @@ public interface ItemService {
 
     List<ItemDto> search(String text);
 
-    ItemDto save(Item item, Long userId);
+    ItemDto save(ItemDto item, Long userId);
 
-    ItemDto update(Item item, Long userId);
+    ItemDto update(ItemDto item, Long userId);
 
     boolean delete(Long id, Long userId);
 

@@ -30,16 +30,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto save(User user) {
-        user.setId(userStorage.nextId());
-        UserDto result = userMapper.toDto(userStorage.save(user));
+    public UserDto save(UserDto userDto) {
+        UserDto result = userMapper.toDto(userStorage.save(userMapper.fromDto(userDto)));
         log.info("Результат сохранения User был приведён в UserDto объект и передан в контроллер");
         return result;
     }
 
     @Override
-    public UserDto update(User user) {
-        UserDto result = userMapper.toDto(userStorage.update(user));
+    public UserDto update(UserDto userDto) {
+        UserDto result = userMapper.toDto(userStorage.update(userMapper.fromDto(userDto)));
         log.info("Результат обновления User был приведён в UserDto объект и передан в контроллер");
         return result;
     }

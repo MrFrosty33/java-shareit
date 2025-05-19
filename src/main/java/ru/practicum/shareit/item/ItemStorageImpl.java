@@ -15,11 +15,7 @@ import java.util.Map;
 
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, Item> inMemoryStorage = new HashMap<>();
-
-    @Override
-    public Long nextId() {
-        return inMemoryStorage.size() + 1L;
-    }
+    private Long nextId = 1L;
 
     @Override
     public Item get(Long id) {
@@ -36,11 +32,10 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Item save(Item item) {
-        Long id = item.getId();
-
-        inMemoryStorage.put(id, item);
-        log.info("Сохранён Item с id: {}", id);
-        validateExists(id); // проверка, верно ли сохранился
+        inMemoryStorage.put(nextId, item);
+        log.info("Сохранён Item с id: {}", nextId);
+        validateExists(nextId); // проверка, верно ли сохранился
+        nextId++;
         return item;
     }
 
@@ -50,7 +45,6 @@ public class ItemStorageImpl implements ItemStorage {
         Long id = item.getId();
 
         validateExists(id);
-        //TODO проверки на isBlank?
         if (item.getName() != null && !item.getName().equals(updatedItem.getName())) {
             updatedItem.setName(item.getName());
         }
@@ -72,6 +66,7 @@ public class ItemStorageImpl implements ItemStorage {
         validateExists(id);
         inMemoryStorage.remove(id);
         log.info("Удалён Item с id: {}", id);
+        nextId--;
         return true;
     }
 
@@ -79,6 +74,7 @@ public class ItemStorageImpl implements ItemStorage {
     public boolean deleteAll() {
         inMemoryStorage.clear();
         log.info("Очищено хранилище Item");
+        nextId = 1L;
         return true;
     }
 

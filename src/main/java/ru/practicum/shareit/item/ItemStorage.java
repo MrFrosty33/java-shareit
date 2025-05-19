@@ -3,8 +3,6 @@ package ru.practicum.shareit.item;
 import java.util.List;
 
 public interface ItemStorage {
-    Long nextId();
-
     Item get(Long id);
 
     List<Item> getAll();
