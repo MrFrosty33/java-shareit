@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto save(ItemDto itemDto, Long userId) {
         userStorage.validateExists(userId);
         // полученный userId стоит сверить с ownerId у itemDto
-        if(!itemDto.getOwnerId().equals(userId)) {
+        if (!itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка сохранить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
             throw new ConflictException("ownerId: " + itemDto.getOwnerId() + " отличается от переданного userId: " + userId);
         }

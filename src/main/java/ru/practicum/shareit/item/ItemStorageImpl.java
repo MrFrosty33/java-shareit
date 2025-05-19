@@ -51,13 +51,13 @@ public class ItemStorageImpl implements ItemStorage {
 
         validateExists(id);
         //TODO проверки на isBlank?
-        if(item.getName() != null && !item.getName().equals(updatedItem.getName())) {
+        if (item.getName() != null && !item.getName().equals(updatedItem.getName())) {
             updatedItem.setName(item.getName());
         }
-        if(item.getDescription() != null && !item.getDescription().equals(updatedItem.getDescription())) {
+        if (item.getDescription() != null && !item.getDescription().equals(updatedItem.getDescription())) {
             updatedItem.setDescription(item.getDescription());
         }
-        if(item.getAvailability() != null && !item.getAvailability().equals(updatedItem.getAvailability())) {
+        if (item.getAvailability() != null && !item.getAvailability().equals(updatedItem.getAvailability())) {
             updatedItem.setAvailability(item.getAvailability());
         }
 
