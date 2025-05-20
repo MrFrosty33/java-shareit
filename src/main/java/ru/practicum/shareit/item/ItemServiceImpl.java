@@ -67,12 +67,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(ItemDto itemDto, Long userId) {
+    public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         userStorage.validateExists(userId);
-        //TODO разобраться
-        // хм... Если id назначается репозиторием, то при обновлении как находить предмет?
-        // контроллер работает только с Dto объектами, Id будет выставляться, допустим, в репозитории,
-        // а при обновлении как быть?
 
         if (!itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
@@ -80,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
                     " отличается от переданного userId: " + userId);
         }
 
-        ItemDto result = itemMapper.toDto(itemStorage.update(itemMapper.fromDto(itemDto)));
+        ItemDto result = itemMapper.toDto(itemStorage.update(itemMapper.fromDto(itemDto, itemId)));
         log.info("Результат обновления Item был приведён в ItemDto объект и передан в контроллер");
         return result;
     }

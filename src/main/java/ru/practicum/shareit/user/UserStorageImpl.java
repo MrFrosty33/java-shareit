@@ -8,7 +8,6 @@ import ru.practicum.shareit.exception.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -24,13 +23,6 @@ public class UserStorageImpl implements UserStorage {
     }
 
     @Override
-    public User getByEmail(String email) {
-        Optional<User> found =
-                inMemoryStorage.values().stream().filter(user -> user.getEmail().equals(email)).findFirst();
-        return found.orElse(null);
-    }
-
-    @Override
     public List<User> getAll() {
         log.info("Получен список всех User");
         return inMemoryStorage.values().stream().toList();
@@ -39,26 +31,28 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public User save(User user) {
         validateUniqueEmail(user.getEmail());
+        Long id = nextId++;
+        user.setId(id);
 
-        inMemoryStorage.put(nextId, user);
-        log.info("Сохранён User с id: {}", nextId);
-        validateExists(nextId); // проверка, верно ли сохранился
-        nextId++;
+        inMemoryStorage.put(id, user);
+        log.info("Сохранён User с id: {}", id);
+        validateExists(id); // проверка, верно ли сохранился
         return user;
     }
 
     @Override
     public User update(User user) {
-        User updatedUser = inMemoryStorage.get(user.getId());
         Long id = user.getId();
-
         validateExists(id);
-        if (user.getEmail() != null && !user.getEmail().equals(updatedUser.getEmail())) {
-            updatedUser.setEmail(user.getEmail());
-        }
+        User updatedUser = inMemoryStorage.get(id);
+
         if (user.getName() != null && !user.getName().equals(updatedUser.getName())) {
             updatedUser.setName(user.getName());
         }
+        if (user.getEmail() != null && !user.getEmail().equals(updatedUser.getEmail())) {
+            updatedUser.setEmail(user.getEmail());
+        }
+
         inMemoryStorage.replace(id, updatedUser);
         log.info("Обновлён User с id: {}", id);
         validateExists(id);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -41,9 +42,13 @@ public class UserController {
         return userService.save(userDto);
     }
 
-    @PatchMapping
-    public UserDto update(@Valid @RequestBody UserDto userDto) {
-        return userService.update(userDto);
+    @PatchMapping("/{id}")
+    public UserDto update(@Valid @RequestBody UserDto userDto,
+                          @RequestParam
+                          @NotNull(message = "ошибка валидации, id не может быть null")
+                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
+                          Long id) {
+        return userService.update(userDto, id);
     }
 
     @DeleteMapping("/{id}")

@@ -32,10 +32,11 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Item save(Item item) {
-        inMemoryStorage.put(nextId, item);
-        log.info("Сохранён Item с id: {}", nextId);
-        validateExists(nextId); // проверка, верно ли сохранился
-        nextId++;
+        Long id = nextId++;
+        item.setId(id);
+        inMemoryStorage.put(id, item);
+        log.info("Сохранён Item с id: {}", id);
+        validateExists(id); // проверка, верно ли сохранился
         return item;
     }
 

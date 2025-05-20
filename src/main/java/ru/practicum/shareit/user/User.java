@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 @Builder(toBuilder = true)
 public class User {
+    //TODO у объектов БД @NotNull на поля?
+
     @Positive(message = "ошибка валидации, id должно быть положительным числом")
     private Long id;
 

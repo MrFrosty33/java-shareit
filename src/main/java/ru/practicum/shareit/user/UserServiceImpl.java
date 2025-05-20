@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserDto userDto) {
+    public UserDto update(UserDto userDto, Long id) {
         UserDto result = userMapper.toDto(userStorage.update(userMapper.fromDto(userDto)));
         log.info("Результат обновления User был приведён в UserDto объект и передан в контроллер");
         return result;
