@@ -51,17 +51,15 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable
+    public void delete(@PathVariable
                          @NotNull(message = "ошибка валидации, id не может быть null")
                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
                          Long id) {
         userService.delete(id);
-        return "Ok";
     }
 
     @DeleteMapping
-    public String deleteAll() {
+    public void deleteAll() {
         userService.deleteAll();
-        return "Ok";
     }
 }

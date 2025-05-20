@@ -75,7 +75,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public String delete(@PathVariable
+    public void delete(@PathVariable
                          @NotNull(message = "ошибка валидации, id не может быть null")
                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
                          Long itemId,
@@ -84,12 +84,10 @@ public class ItemController {
                          @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                          Long userId) {
         itemService.delete(itemId, userId);
-        return "Ok";
     }
 
     @DeleteMapping
-    public String deleteAll() {
+    public void deleteAll() {
         itemService.deleteAll();
-        return "Ok";
     }
 }
