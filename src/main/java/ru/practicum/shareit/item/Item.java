@@ -32,8 +32,8 @@ public class Item {
     @Positive(message = "ошибка валидации, requestId должно быть положительным числом")
     private Long requestId;
 
-    @NotNull(message = "ошибка валидации, availability не может быть null")
-    private Availability availability;
+    @NotNull(message = "ошибка валидации, available не может быть null")
+    private Boolean available;
 
     @Getter
     private Long rentalCount = 0L;

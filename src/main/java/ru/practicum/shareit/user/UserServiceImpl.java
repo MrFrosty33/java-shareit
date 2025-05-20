@@ -21,14 +21,14 @@ public class UserServiceImpl implements UserService {
     public User get(Long id) {
         validateUserExists(id);
         User result = userStorage.get(id);
-        log.info("Был получен User с id: {}", id);
+        log.info("Получен User с id: {}", id);
         return result;
     }
 
     @Override
     public List<User> getAll() {
         List<User> result = userStorage.getAll();
-        log.info("Был получен список всех User");
+        log.info("Получен список всех User");
         return result;
     }
 
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteAll() {
         boolean result = userStorage.deleteAll();
-        log.info("Хранилище User было очищено");
+        log.info("Очищено хранилище User");
         return result;
     }
 

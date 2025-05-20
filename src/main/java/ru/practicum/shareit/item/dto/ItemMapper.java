@@ -12,7 +12,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .ownerId(item.getOwnerId() != null ? item.getOwnerId() : null)
                 .requestId(item.getRequestId() != null ? item.getRequestId() : null)
-                .availability(item.getAvailability())
+                .available(item.getAvailable())
                 .build();
     }
 
@@ -22,7 +22,7 @@ public class ItemMapper {
                 .description(itemDto.getDescription())
                 .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
                 .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .availability(itemDto.getAvailability())
+                .available(itemDto.getAvailable())
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class ItemMapper {
                 .description(itemDto.getDescription())
                 .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
                 .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .availability(itemDto.getAvailability())
+                .available(itemDto.getAvailable())
                 .build();
     }
 }

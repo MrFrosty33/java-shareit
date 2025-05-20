@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
@@ -19,78 +20,90 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto get(Long itemId, Long userId) {
-        userService.validateUserExists(userId);
+    public Item get(Long itemId, Long userId) {
+        validateItemExists(itemId);
+
         // userId поступает в заголовке, но пока никак не применяется?
         // по ТЗ информацию о предмете может получить любой пользователь
-
-        ItemDto result = itemMapper.toDto(itemStorage.get(itemId));
-        log.info("Результат получения Item по itemId был приведён в ItemDto объект и передан далее");
-        return result;
-    }
-
-    @Override
-    public List<ItemDto> getAll(Long userId) {
         userService.validateUserExists(userId);
 
-        List<ItemDto> result = itemStorage.getAll().stream().map(itemMapper::toDto).toList();
-        log.info("Результат получения всех Item был приведён в список ItemDto объектов и передан далее");
+        Item result = itemStorage.get(itemId);
+        log.info("Получен Item с id: {}", itemId);
         return result;
     }
 
     @Override
-    public List<ItemDto> search(String text, Long userId) {
-        List<ItemDto> result = getAll(userId).stream()
-                .filter(itemDto ->
-                        itemDto.getDescription().contains(text)
-                                || itemDto.getName().contains(text)
-                                && itemDto.getAvailability().equals(Availability.AVAILABLE))
+    public List<Item> getAllItemsByUserId(Long userId) {
+        userService.validateUserExists(userId);
+
+        List<Item> result = itemStorage.getAll().stream().filter(item -> item.getOwnerId().equals(userId)).toList();
+        log.info("Получен список всех Item у пользователя с id: {}", userId);
+        return result;
+    }
+
+    @Override
+    public List<Item> search(String text, Long userId) {
+        // если текст пуст, то возвращаем пустой список? Или стоит всё же что-то искать?
+        if (text.isEmpty()) return List.of();
+        String textEdited = text.toLowerCase();
+
+        List<Item> result = getAllItemsByUserId(userId).stream()
+                .filter(item ->
+                        (item.getDescription().toLowerCase().contains(textEdited)
+                                || item.getName().toLowerCase().contains(textEdited))
+                                && item.getAvailable())
                 .toList();
-        log.info("Список всех ItemDto был отфильтрован, " +
-                "содержащие text: {} в имени или описании экземпляры были переданы далее", text);
+        log.info("Полученный список всех Item был отфильтрован, " +
+                "содержащие text: {} в имени или описании экземпляры со статусом available: true были переданы далее", text);
         return result;
     }
 
     @Override
-    public ItemDto save(ItemDto itemDto, Long userId) {
+    public Item save(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
-
-        ItemDto result = itemMapper.toDto(itemStorage.save(itemMapper.fromDto(itemDto)));
-        log.info("Результат сохранения Item был приведён в ItemDto объект и передан в контроллер");
+        itemDto.setOwnerId(userId);
+        Item result = itemStorage.save(itemMapper.fromDto(itemDto));
+        log.info("Сохранён Item с id: {}", result.getId());
         return result;
     }
 
     @Override
-    public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
+    public Item update(ItemDto itemDto, Long itemId, Long userId) {
         userService.validateUserExists(userId);
 
         // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
-        if (!itemDto.getOwnerId().equals(userId)) {
+        if (itemDto.getOwnerId() != null && !itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
             throw new ConflictException("ownerId: " + itemDto.getOwnerId() +
                     " отличается от переданного userId: " + userId);
         }
 
-        ItemDto result = itemMapper.toDto(itemStorage.update(itemMapper.fromDto(itemDto, itemId)));
-        log.info("Результат обновления Item был приведён в ItemDto объект и передан в контроллер");
+        Item result = itemStorage.update(itemMapper.fromDto(itemDto, itemId));
+        log.info("Обновлён Item с id: {}", itemId);
         return result;
     }
 
     @Override
     public boolean delete(Long itemId, Long userId) {
+        validateItemExists(itemId);
         userService.validateUserExists(userId);
-        Item item = itemStorage.get(itemId);
-
-        if (!item.getOwnerId().equals(userId)) {
-            log.info("Попытка удалить Item, но ownerId: {} не сходится с userId: {}", item.getOwnerId(), userId);
-            throw new ConflictException("ownerId: " + item.getOwnerId() +
-                    " отличается от переданного userId: " + userId);
-        }
-        return itemStorage.delete(itemId);
+        boolean result = itemStorage.delete(itemId);
+        log.info("Удалён Item с id: {}", itemId);
+        return result;
     }
 
     @Override
     public boolean deleteAll() {
-        return itemStorage.deleteAll();
+        boolean result = itemStorage.deleteAll();
+        log.info("Очищено хранилище Item");
+        return result;
+    }
+
+    @Override
+    public void validateItemExists(Long id) {
+        if (!itemStorage.getIds().contains(id)) {
+            log.info("Попытка найти Item с id: {}", id);
+            throw new NotFoundException("Item с id: " + id + " не найден");
+        }
     }
 }

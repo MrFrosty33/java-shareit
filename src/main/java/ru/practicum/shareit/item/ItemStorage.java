@@ -1,12 +1,13 @@
 package ru.practicum.shareit.item;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ItemStorage {
+    Set<Long> getIds();
     Item get(Long id);
 
     List<Item> getAll();
-
 
     Item save(Item item);
 
@@ -15,6 +16,4 @@ public interface ItemStorage {
     boolean delete(Long id);
 
     boolean deleteAll();
-
-    void validateExists(Long id);
 }
