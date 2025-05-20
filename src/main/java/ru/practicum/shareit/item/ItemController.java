@@ -26,16 +26,15 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{itemId}")
     public ItemDto get(@PathVariable
                        @NotNull(message = "ошибка валидации, id не может быть null")
                        @Positive(message = "ошибка валидации, id должно быть положительным числом")
-                           Long id,
+                       Long itemId,
                        @RequestHeader("X-Sharer-User-Id")
-                           @NotNull(message = "ошибка валидации, userId не может быть null")
-                           @Positive(message = "ошибка валидации, userId должно быть положительным числом")
-                           Long userId) {
-        return itemService.get(id, userId);
+                       @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                       Long userId) {
+        return itemService.get(itemId, userId);
     }
 
     @GetMapping
@@ -51,7 +50,6 @@ public class ItemController {
                                     @NotBlank(message = "ошибка валидации, text не может быть null / Blank")
                                     String text,
                                 @RequestHeader("X-Sharer-User-Id")
-                                    @NotNull(message = "ошибка валидации, userId не может быть null")
                                     @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                                     Long userId) {
         return itemService.search(text, userId);
@@ -60,34 +58,32 @@ public class ItemController {
     @PostMapping
     public ItemDto save(@Valid @RequestBody ItemDto itemDto,
                         @RequestHeader("X-Sharer-User-Id")
-                        @NotNull(message = "ошибка валидации, userId не может быть null")
                         @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                         Long userId) {
         return itemService.save(itemDto, userId);
     }
 
-    @PatchMapping
+    @PatchMapping("{itemId}")
     public ItemDto update(@Valid @RequestBody ItemDto itemDto,
                           @NotNull(message = "ошибка валидации, itemId не может быть null")
                           @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
                           Long itemId,
                           @RequestHeader("X-Sharer-User-Id")
-                          @NotNull(message = "ошибка валидации, userId не может быть null")
                           @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                           Long userId) {
         return itemService.update(itemDto, itemId, userId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{itemId}")
     public String delete(@PathVariable
                          @NotNull(message = "ошибка валидации, id не может быть null")
                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
-                             Long id,
+                         Long itemId,
                          @RequestHeader("X-Sharer-User-Id")
-                             @NotNull(message = "ошибка валидации, userId не может быть null")
-                             @Positive(message = "ошибка валидации, userId должно быть положительным числом")
-                             Long userId) {
-        itemService.delete(id, userId);
+                         @NotNull(message = "ошибка валидации, userId не может быть null")
+                         @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                         Long userId) {
+        itemService.delete(itemId, userId);
         return "Ok";
     }
 

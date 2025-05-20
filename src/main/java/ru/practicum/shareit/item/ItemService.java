@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import java.util.List;
 
 public interface ItemService {
-    ItemDto get(Long id, Long userId);
+    ItemDto get(Long itemId, Long userId);
 
     List<ItemDto> getAll(Long userId);
 
@@ -15,7 +15,7 @@ public interface ItemService {
 
     ItemDto update(ItemDto item, Long itemId, Long userId);
 
-    boolean delete(Long id, Long userId);
+    boolean delete(Long itemId, Long userId);
 
     boolean deleteAll();
 }

@@ -19,13 +19,13 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto get(Long id, Long userId) {
+    public ItemDto get(Long itemId, Long userId) {
         userStorage.validateExists(userId);
         // userId поступает в заголовке, но пока никак не применяется?
         // по ТЗ информацию о предмете может получить любой пользователь
 
-        ItemDto result = itemMapper.toDto(itemStorage.get(id));
-        log.info("Результат получения Item по id был приведён в ItemDto объект и передан далее");
+        ItemDto result = itemMapper.toDto(itemStorage.get(itemId));
+        log.info("Результат получения Item по itemId был приведён в ItemDto объект и передан далее");
         return result;
     }
 
@@ -55,13 +55,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto save(ItemDto itemDto, Long userId) {
         userStorage.validateExists(userId);
 
-        // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
-        if (!itemDto.getOwnerId().equals(userId)) {
-            log.info("Попытка сохранить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
-            throw new ConflictException("ownerId: " + itemDto.getOwnerId() +
-                    " отличается от переданного userId: " + userId);
-        }
-
         ItemDto result = itemMapper.toDto(itemStorage.save(itemMapper.fromDto(itemDto)));
         log.info("Результат сохранения Item был приведён в ItemDto объект и передан в контроллер");
         return result;
@@ -71,6 +64,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         userStorage.validateExists(userId);
 
+        // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
         if (!itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
             throw new ConflictException("ownerId: " + itemDto.getOwnerId() +
@@ -83,16 +77,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public boolean delete(Long id, Long userId) {
+    public boolean delete(Long itemId, Long userId) {
         userStorage.validateExists(userId);
-        Item item = itemStorage.get(id);
+        Item item = itemStorage.get(itemId);
 
         if (!item.getOwnerId().equals(userId)) {
             log.info("Попытка удалить Item, но ownerId: {} не сходится с userId: {}", item.getOwnerId(), userId);
             throw new ConflictException("ownerId: " + item.getOwnerId() +
                     " отличается от переданного userId: " + userId);
         }
-        return itemStorage.delete(id);
+        return itemStorage.delete(itemId);
     }
 
     @Override
