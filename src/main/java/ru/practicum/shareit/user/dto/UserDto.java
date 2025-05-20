@@ -5,15 +5,20 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.user.OnCreate;
+import ru.practicum.shareit.user.OnUpdate;
 
 @Data
 @Builder(toBuilder = true)
 public class UserDto {
-    @NotBlank(message = "ошибка валидации, name не может быть null / Blank")
-    @Size(max = 100, message = "ошшибка валидации, длина name не может превышать 100 символов")
+
+    @NotBlank(message = "ошибка валидации, name не может быть Blank", groups = {OnCreate.class})
+    @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов",
+            groups = {OnCreate.class, OnUpdate.class})
     private String name;
 
-    @NotBlank(message = "ошибка валидации, email не может быть null / Blank")
-    @Email(message = "ошибка валидации, email должен быть действительным")
+    @NotBlank(message = "ошибка валидации, name не может быть Blank", groups = {OnCreate.class})
+    @Email(message = "ошибка валидации, email должен быть действительным",
+            groups = {OnCreate.class, OnUpdate.class})
     private String email;
 }

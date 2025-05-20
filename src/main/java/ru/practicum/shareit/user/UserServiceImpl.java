@@ -3,6 +3,8 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
@@ -16,40 +18,65 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDto get(Long id) {
-        UserDto result = userMapper.toDto(userStorage.get(id));
-        log.info("Результат получения User по id был приведён в UserDto объект и передан далее");
+    public User get(Long id) {
+        validateUserExists(id);
+        User result = userStorage.get(id);
+        log.info("Был получен User с id: {}", id);
         return result;
     }
 
     @Override
-    public List<UserDto> getAll() {
-        List<UserDto> result = userStorage.getAll().stream().map(userMapper::toDto).toList();
-        log.info("Результат получения всех User был приведён в список UserDto объектов и передан далее");
+    public List<User> getAll() {
+        List<User> result = userStorage.getAll();
+        log.info("Был получен список всех User");
         return result;
     }
 
     @Override
-    public UserDto save(UserDto userDto) {
-        UserDto result = userMapper.toDto(userStorage.save(userMapper.fromDto(userDto)));
-        log.info("Результат сохранения User был приведён в UserDto объект и передан в контроллер");
+    public User save(UserDto userDto) {
+        validateUniqueEmail(userDto.getEmail());
+        User result = userStorage.save(userMapper.fromDto(userDto));
+        log.info("Сохранён User с id: {}", result.getId());
         return result;
     }
 
     @Override
-    public UserDto update(UserDto userDto, Long id) {
-        UserDto result = userMapper.toDto(userStorage.update(userMapper.fromDto(userDto)));
-        log.info("Результат обновления User был приведён в UserDto объект и передан в контроллер");
+    public User update(UserDto userDto, Long id) {
+        validateUserExists(id);
+        validateUniqueEmail(userDto.getEmail());
+        User result = userStorage.update(userDto, id);
+        log.info("Обновлён User с id: {}", id);
         return result;
     }
 
     @Override
     public boolean delete(Long id) {
-        return userStorage.delete(id);
+        validateUserExists(id);
+        boolean result = userStorage.delete(id);
+        log.info("Удалён User с id: {}", id);
+        return result;
     }
 
     @Override
     public boolean deleteAll() {
-        return userStorage.deleteAll();
+        boolean result = userStorage.deleteAll();
+        log.info("Хранилище User было очищено");
+        return result;
+    }
+
+    // при подключении БД в будущем наверно стоит вынести в отдельный класс валидатор?
+    @Override
+    public void validateUserExists(Long id) {
+        if (!userStorage.getIds().contains(id)) {
+            log.info("Попытка найти несуществующего User с id: {}", id);
+            throw new NotFoundException("User с id: " + id + " не найден");
+        }
+    }
+
+    private void validateUniqueEmail(String email) {
+        if (userStorage.getAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
+            log.info("Попытка добавить нового пользователя с уже привязанным email: {}", email);
+            throw new ConflictException("Email: " + email + " уже привязан");
+        }
     }
 }

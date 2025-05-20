@@ -63,8 +63,9 @@ public class ItemController {
         return itemService.save(itemDto, userId);
     }
 
-    @PatchMapping("{itemId}")
+    @PatchMapping("/{itemId}")
     public ItemDto update(@Valid @RequestBody ItemDto itemDto,
+                          @PathVariable
                           @NotNull(message = "ошибка валидации, itemId не может быть null")
                           @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
                           Long itemId,
@@ -91,6 +92,14 @@ public class ItemController {
     public String deleteAll() {
         itemService.deleteAll();
         return "Ok";
+    }
+
+    private Long parseLong(String text) {
+        try {
+            return Long.parseLong(text);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }

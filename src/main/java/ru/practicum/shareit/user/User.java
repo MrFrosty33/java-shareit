@@ -17,7 +17,7 @@ public class User {
 
     @NotNull(message = "ошибка валидации, name не может быть null")
     @NotBlank(message = "ошибка валидации, name не может быть Blank")
-    @Size(max = 100, message = "ошшибка валидации, длина name не может превышать 100 символов")
+    @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов")
     private String name;
 
     @NotNull(message = "ошибка валидации, email не может быть null")

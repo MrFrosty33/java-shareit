@@ -19,12 +19,12 @@ public class Item {
     // Или же и там, и тут это делать, на всякий случай?
     @NotNull(message = "ошибка валидации, name не может быть null")
     @NotBlank(message = "ошибка валидации, name не может быть Blank")
-    @Size(max = 100, message = "ошшибка валидации, длина name не может превышать 100 символов")
+    @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов")
     private String name;
 
     @NotNull(message = "ошибка валидации, description не может быть null")
     @NotBlank(message = "ошибка валидации, description не может быть Blank")
-    @Size(max = 1000, message = "ошшибка валидации, длина description не может превышать 1000 символов")
+    @Size(max = 1000, message = "ошибка валидации, длина description не может превышать 1000 символов")
     private String description;
 
     @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")

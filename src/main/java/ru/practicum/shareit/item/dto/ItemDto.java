@@ -11,11 +11,11 @@ import ru.practicum.shareit.item.Availability;
 @Data
 @Builder(toBuilder = true)
 public class ItemDto {
-    @NotBlank(message = "ошибка валидации, name не может быть null / Blank")
+    @NotBlank(message = "ошибка валидации, name не может быть Blank")
     @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов")
     private String name;
 
-    @NotBlank(message = "ошибка валидации, description не может быть null / Blank")
+    @NotBlank(message = "ошибка валидации, description не может быть Blank")
     @Size(max = 1000, message = "ошибка валидации, длина description не может превышать 1000 символов")
     private String description;
 

@@ -1,10 +1,10 @@
 package ru.practicum.shareit.user;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -25,7 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable
+    public User get(@PathVariable
                        @NotNull(message = "ошибка валидации, id не может быть null")
                        @Positive(message = "ошибка валидации, id должно быть положительным числом")
                        Long id) {
@@ -33,18 +32,18 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAll() {
+    public List<User> getAll() {
         return userService.getAll();
     }
 
     @PostMapping
-    public UserDto save(@Valid @RequestBody UserDto userDto) {
+    public User save(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
         return userService.save(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@Valid @RequestBody UserDto userDto,
-                          @RequestParam
+    public User update(@Validated(OnUpdate.class) @RequestBody UserDto userDto,
+                          @PathVariable
                           @NotNull(message = "ошибка валидации, id не может быть null")
                           @Positive(message = "ошибка валидации, id должно быть положительным числом")
                           Long id) {

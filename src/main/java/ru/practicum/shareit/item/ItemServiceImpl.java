@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.user.UserStorage;
+import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ import java.util.List;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
+    private final UserService userService;
     private final ItemMapper itemMapper;
 
     @Override
     public ItemDto get(Long itemId, Long userId) {
-        userStorage.validateExists(userId);
+        userService.validateUserExists(userId);
         // userId поступает в заголовке, но пока никак не применяется?
         // по ТЗ информацию о предмете может получить любой пользователь
 
@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAll(Long userId) {
-        userStorage.validateExists(userId);
+        userService.validateUserExists(userId);
 
         List<ItemDto> result = itemStorage.getAll().stream().map(itemMapper::toDto).toList();
         log.info("Результат получения всех Item был приведён в список ItemDto объектов и передан далее");
@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto save(ItemDto itemDto, Long userId) {
-        userStorage.validateExists(userId);
+        userService.validateUserExists(userId);
 
         ItemDto result = itemMapper.toDto(itemStorage.save(itemMapper.fromDto(itemDto)));
         log.info("Результат сохранения Item был приведён в ItemDto объект и передан в контроллер");
@@ -62,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
-        userStorage.validateExists(userId);
+        userService.validateUserExists(userId);
 
         // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
         if (!itemDto.getOwnerId().equals(userId)) {
@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public boolean delete(Long itemId, Long userId) {
-        userStorage.validateExists(userId);
+        userService.validateUserExists(userId);
         Item item = itemStorage.get(itemId);
 
         if (!item.getOwnerId().equals(userId)) {
