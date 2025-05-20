@@ -16,43 +16,79 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(NotFoundException e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
         log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
-                e.getClass().getSimpleName(), e.getMessage());
-        return new ErrorResponse(e.getMessage());
+                exceptionName, message);
+        return new ErrorResponse(message);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadParam(BadRequestParamException e) {
-        log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
-                e.getClass().getSimpleName(), e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class,
-            MethodArgumentTypeMismatchException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(Exception e) {
         log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
-                e.getClass().getSimpleName(), e.getMessage());
-        return new ErrorResponse("Валидация не прошла: " + e.getMessage());
+                exceptionName, message);
+        return new ErrorResponse(message);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(ConflictException e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
         log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
-                e.getClass().getSimpleName(), e.getMessage());
-        return new ErrorResponse(e.getMessage());
+                exceptionName, message);
+        return new ErrorResponse(message);
     }
 
     @ExceptionHandler({InternalServerException.class, Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleOther(Exception e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
         log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
-                e.getClass().getSimpleName(), e.getMessage());
-        return new ErrorResponse("Внутрення ошибка сервера: " + e.getMessage());
+                exceptionName, message);
+        return new ErrorResponse(message);
     }
 
+    // в последующих 3-х методах можно подумать над упрощением сообщения, чтобы оно не было несколько строк в длину
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
+        log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
+                exceptionName, message);
+        return new ErrorResponse(message);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleConstraintViolation(ConstraintViolationException e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
+        log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
+                exceptionName, message);
+        return new ErrorResponse(message);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        String exceptionName = e.getClass().getSimpleName();
+        String message = e.getMessage();
+
+        log.info("ApplicationExceptionHandler поймал {} с сообщением: {}",
+                exceptionName, message);
+        return new ErrorResponse(message);
+    }
 
 }
