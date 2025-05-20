@@ -5,6 +5,7 @@ import java.util.Set;
 
 public interface ItemStorage {
     Set<Long> getIds();
+
     Item get(Long id);
 
     List<Item> getAll();
