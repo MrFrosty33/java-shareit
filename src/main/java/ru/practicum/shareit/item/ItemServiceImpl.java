@@ -21,30 +21,31 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto get(Long id, Long userId) {
         userStorage.validateExists(userId);
+        // userId поступает в заголовке, но пока никак не применяется?
+        // по ТЗ информацию о предмете может получить любой пользователь
 
         ItemDto result = itemMapper.toDto(itemStorage.get(id));
-        // если другой владелец, то информацию о предмете мы не провозглашаем?
-        if (!result.getOwnerId().equals(userId)) {
-            log.info("Попытка получить Item, но ownerId: {} не сходится с userId: {}", result.getOwnerId(), userId);
-            throw new ConflictException("ownerId: " + result.getOwnerId() +
-                    " отличается от переданного userId: " + userId);
-        }
         log.info("Результат получения Item по id был приведён в ItemDto объект и передан далее");
         return result;
     }
 
     @Override
-    public List<ItemDto> getAll() {
+    public List<ItemDto> getAll(Long userId) {
+        userStorage.validateExists(userId);
+
         List<ItemDto> result = itemStorage.getAll().stream().map(itemMapper::toDto).toList();
         log.info("Результат получения всех Item был приведён в список ItemDto объектов и передан далее");
         return result;
     }
 
     @Override
-    public List<ItemDto> search(String text) {
-        List<ItemDto> result = getAll().stream()
+    public List<ItemDto> search(String text, Long userId) {
+        List<ItemDto> result = getAll(userId).stream()
                 .filter(itemDto ->
-                        itemDto.getDescription().contains(text) || itemDto.getName().contains(text)).toList();
+                        itemDto.getDescription().contains(text)
+                                || itemDto.getName().contains(text)
+                                && itemDto.getAvailability().equals(Availability.AVAILABLE))
+                .toList();
         log.info("Список всех ItemDto был отфильтрован, " +
                 "содержащие text: {} в имени или описании экземпляры были переданы далее", text);
         return result;

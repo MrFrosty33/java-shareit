@@ -7,9 +7,9 @@ import java.util.List;
 public interface ItemService {
     ItemDto get(Long id, Long userId);
 
-    List<ItemDto> getAll();
+    List<ItemDto> getAll(Long userId);
 
-    List<ItemDto> search(String text);
+    List<ItemDto> search(String text, Long userId);
 
     ItemDto save(ItemDto item, Long userId);
 

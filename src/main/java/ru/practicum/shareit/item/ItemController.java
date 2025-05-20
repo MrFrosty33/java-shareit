@@ -39,15 +39,22 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAll() {
-        return itemService.getAll();
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id")
+                                @NotNull(message = "ошибка валидации, userId не может быть null")
+                                @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                                Long userId) {
+        return itemService.getAll(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam
                                     @NotBlank(message = "ошибка валидации, text не может быть null / Blank")
-                                String text) {
-        return itemService.search(text);
+                                    String text,
+                                @RequestHeader("X-Sharer-User-Id")
+                                    @NotNull(message = "ошибка валидации, userId не может быть null")
+                                    @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+                                    Long userId) {
+        return itemService.search(text, userId);
     }
 
     @PostMapping
