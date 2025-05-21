@@ -26,7 +26,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{itemId}")
-    public Item get(@PathVariable
+    public ItemDto get(@PathVariable
                     @NotNull(message = "ошибка валидации, id не может быть null")
                     @Positive(message = "ошибка валидации, id должно быть положительным числом")
                     Long itemId,
@@ -37,7 +37,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id")
+    public List<ItemDto> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id")
                                           @NotNull(message = "ошибка валидации, userId не может быть null")
                                           @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                                           Long userId) {
@@ -45,7 +45,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> search(@RequestParam
+    public List<ItemDto> search(@RequestParam
                              //@NotBlank(message = "ошибка валидации, text не может быть null / Blank")
                              String text,
                              @RequestHeader("X-Sharer-User-Id")
@@ -55,7 +55,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public Item save(@Validated(OnCreate.class) @RequestBody ItemDto itemDto,
+    public ItemDto save(@Validated(OnCreate.class) @RequestBody ItemDto itemDto,
                      @RequestHeader("X-Sharer-User-Id")
                      @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                      Long userId) {
@@ -63,7 +63,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@Validated(OnUpdate.class) @RequestBody ItemDto itemDto,
+    public ItemDto update(@Validated(OnUpdate.class) @RequestBody ItemDto itemDto,
                        @PathVariable
                        @NotNull(message = "ошибка валидации, itemId не может быть null")
                        @Positive(message = "ошибка валидации, itemId должно быть положительным числом")

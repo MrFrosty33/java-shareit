@@ -18,33 +18,33 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public User get(Long id) {
+    public UserDto get(Long id) {
         validateUserExists(id);
-        User result = userStorage.get(id);
+        UserDto result = userMapper.toDto(userStorage.get(id));
         log.info("Получен User с id: {}", id);
         return result;
     }
 
     @Override
-    public List<User> getAll() {
-        List<User> result = userStorage.getAll();
+    public List<UserDto> getAll() {
+        List<UserDto> result = userStorage.getAll().stream().map(userMapper::toDto).toList();
         log.info("Получен список всех User");
         return result;
     }
 
     @Override
-    public User save(UserDto userDto) {
+    public UserDto save(UserDto userDto) {
         validateUniqueEmail(userDto.getEmail());
-        User result = userStorage.save(userMapper.fromDto(userDto));
+        UserDto result = userMapper.toDto(userStorage.save(userMapper.fromDto(userDto)));
         log.info("Сохранён User с id: {}", result.getId());
         return result;
     }
 
     @Override
-    public User update(UserDto userDto, Long id) {
+    public UserDto update(UserDto userDto, Long id) {
         validateUserExists(id);
         validateUniqueEmail(userDto.getEmail());
-        User result = userStorage.update(userDto, id);
+        UserDto result = userMapper.toDto(userStorage.update(userDto, id));
         log.info("Обновлён User с id: {}", id);
         return result;
     }

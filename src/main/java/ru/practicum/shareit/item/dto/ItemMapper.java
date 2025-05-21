@@ -8,6 +8,7 @@ public class ItemMapper {
 
     public ItemDto toDto(Item item) {
         return ItemDto.builder()
+                .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .ownerId(item.getOwnerId() != null ? item.getOwnerId() : null)

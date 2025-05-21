@@ -12,6 +12,8 @@ import ru.practicum.shareit.item.OnUpdate;
 @Data
 @Builder(toBuilder = true)
 public class ItemDto {
+    private Long id;
+
     @NotBlank(message = "ошибка валидации, name не может быть Blank", groups = {OnCreate.class})
     @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов",
             groups = {OnCreate.class, OnUpdate.class})

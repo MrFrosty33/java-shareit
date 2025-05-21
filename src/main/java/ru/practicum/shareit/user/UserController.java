@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public User get(@PathVariable
+    public UserDto get(@PathVariable
                        @NotNull(message = "ошибка валидации, id не может быть null")
                        @Positive(message = "ошибка валидации, id должно быть положительным числом")
                        Long id) {
@@ -32,17 +32,17 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userService.getAll();
     }
 
     @PostMapping
-    public User save(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
+    public UserDto save(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
         return userService.save(userDto);
     }
 
     @PatchMapping("/{id}")
-    public User update(@Validated(OnUpdate.class) @RequestBody UserDto userDto,
+    public UserDto update(@Validated(OnUpdate.class) @RequestBody UserDto userDto,
                           @PathVariable
                           @NotNull(message = "ошибка валидации, id не может быть null")
                           @Positive(message = "ошибка валидации, id должно быть положительным числом")

@@ -20,34 +20,36 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public Item get(Long itemId, Long userId) {
+    public ItemDto get(Long itemId, Long userId) {
         validateItemExists(itemId);
 
         // userId поступает в заголовке, но пока никак не применяется?
         // по ТЗ информацию о предмете может получить любой пользователь
         userService.validateUserExists(userId);
 
-        Item result = itemStorage.get(itemId);
+        ItemDto result = itemMapper.toDto(itemStorage.get(itemId));
         log.info("Получен Item с id: {}", itemId);
         return result;
     }
 
     @Override
-    public List<Item> getAllItemsByUserId(Long userId) {
+    public List<ItemDto> getAllItemsByUserId(Long userId) {
         userService.validateUserExists(userId);
 
-        List<Item> result = itemStorage.getAll().stream().filter(item -> item.getOwnerId().equals(userId)).toList();
+        List<ItemDto> result = itemStorage.getAll().stream()
+                .filter(item -> item.getOwnerId().equals(userId))
+                .map(itemMapper::toDto)
+                .toList();
         log.info("Получен список всех Item у пользователя с id: {}", userId);
         return result;
     }
 
     @Override
-    public List<Item> search(String text, Long userId) {
-        // если текст пуст, то возвращаем пустой список? Или стоит всё же что-то искать?
+    public List<ItemDto> search(String text, Long userId) {
         if (text.isEmpty()) return List.of();
         String textEdited = text.toLowerCase();
 
-        List<Item> result = getAllItemsByUserId(userId).stream()
+        List<ItemDto> result = getAllItemsByUserId(userId).stream()
                 .filter(item ->
                         (item.getDescription().toLowerCase().contains(textEdited)
                                 || item.getName().toLowerCase().contains(textEdited))
@@ -59,16 +61,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item save(ItemDto itemDto, Long userId) {
+    public ItemDto save(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
         itemDto.setOwnerId(userId);
-        Item result = itemStorage.save(itemMapper.fromDto(itemDto));
+        ItemDto result = itemMapper.toDto(itemStorage.save(itemMapper.fromDto(itemDto)));
         log.info("Сохранён Item с id: {}", result.getId());
         return result;
     }
 
     @Override
-    public Item update(ItemDto itemDto, Long itemId, Long userId) {
+    public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         userService.validateUserExists(userId);
 
         // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
@@ -78,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
                     " отличается от переданного userId: " + userId);
         }
 
-        Item result = itemStorage.update(itemMapper.fromDto(itemDto, itemId));
+        ItemDto result = itemMapper.toDto(itemStorage.update(itemMapper.fromDto(itemDto, itemId)));
         log.info("Обновлён Item с id: {}", itemId);
         return result;
     }

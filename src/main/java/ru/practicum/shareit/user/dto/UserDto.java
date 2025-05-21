@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.OnUpdate;
 @Data
 @Builder(toBuilder = true)
 public class UserDto {
+    private Long id;
 
     @NotBlank(message = "ошибка валидации, name не может быть Blank", groups = {OnCreate.class})
     @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов",
