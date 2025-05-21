@@ -2,16 +2,16 @@ package ru.practicum.shareit.booking;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDate;
 
 @Data
 @Builder(toBuilder = true)
 public class Booking {
-    @Positive(message = "ошибка валидации, id должно быть положительным числом")
+    @NotNull(message = "ошибка валидации, id не может быть null")
     private Long id;
 
     @NotNull(message = "ошибка валидации, startDate не может быть null")
@@ -22,16 +22,14 @@ public class Booking {
     @FutureOrPresent(message = "ошибка валидации, endDate не может быть в прошлом")
     private LocalDate endDate;
 
-    @NotNull(message = "ошибка валидации, itemId не может быть null")
-    @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
-    private Long itemId;
-
-    @NotNull(message = "ошибка валидации, bookerId не может быть null")
-    @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
-    private Long bookerId;
-
     @NotNull(message = "ошибка валидации, status не может быть null")
     private Status status;
+
+    @NotNull(message = "ошибка валидации, owner не может быть null")
+    private User owner;
+
+    @NotNull(message = "ошибка валидации, renter не может быть null")
+    private User renter;
 
 
 }
