@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,7 +16,6 @@ public class User {
 
     @NotNull(message = "ошибка валидации, name не может быть null")
     @NotBlank(message = "ошибка валидации, name не может быть Blank")
-    @Size(max = 100, message = "ошибка валидации, длина name не может превышать 100 символов")
     private String name;
 
     @NotNull(message = "ошибка валидации, email не может быть null")
