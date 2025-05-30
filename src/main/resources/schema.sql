@@ -1,5 +1,26 @@
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name varchar(150),
-    email varchar(150)
+    name varchar(100) NOT NULL,
+    email varchar(100) NOT NULL,
+    CONSTRAINT uq_users_email UNIQUE(email)
+);
+
+CREATE TABLE IF NOT EXISTS requests (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    description varchar(1000) NOT NULL,
+    -- не забывать, чтобы было на что ссылаться, эта таблица и поле уже должно существовать!!!
+    request_id BIGINT NOT NULL,
+    created_at date NOT NULL,
+    CONSTRAINT fk_requests_to_user FOREIGN KEY(request_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS items (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name varchar(100) NOT NULL,
+    description varchar(1000) NOT NULL,
+    owner_id BIGINT NOT NULL,
+    request_id BIGINT NOT NULL,
+    availability boolean NOT NULL,
+    CONSTRAINT fk_items_to_user FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_items_to_request FOREIGN KEY(request_id) REFERENCES requests(id) ON DELETE CASCADE
 );
