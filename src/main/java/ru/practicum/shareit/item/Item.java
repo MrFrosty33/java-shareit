@@ -1,32 +1,48 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
+@Entity
+@Table(name = "items")
 public class Item {
-    @NotNull(message = "ошибка валидации, id не может быть null")
-    @Positive(message = "ошибка валидации, id должно быть положительным числом")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "ошибка валидации, name не может быть null")
-    @NotBlank(message = "ошибка валидации, name не может быть Blank")
+
+    // Уберу пока все проверки @NotNull, @Positive. Все это отсеивается ещё в DTO объекте
+    // и в случае какого-то неподходящего значения, его дальше не даст вставить сама БД по ограничения полей таблицы
+
+    @Column
     private String name;
 
-    @NotNull(message = "ошибка валидации, description не может быть null")
-    @NotBlank(message = "ошибка валидации, description не может быть Blank")
+    @Column
     private String description;
 
-    @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
-    private Long ownerId;
-    @Positive(message = "ошибка валидации, requestId должно быть положительным числом")
-    private Long requestId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
-    @NotNull(message = "ошибка валидации, available не может быть null")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
+
+    @Column(name = "availability")
     private Boolean available;
 
     @Getter

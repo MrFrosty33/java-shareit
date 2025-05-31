@@ -27,6 +27,7 @@ public class ItemDto {
     @Positive(message = "ошибка валидации, ownerId должно быть положительным числом",
             groups = {OnCreate.class, OnUpdate.class})
     private Long ownerId;
+
     @Positive(message = "ошибка валидации, requestId должно быть положительным числом",
             groups = {OnCreate.class, OnUpdate.class})
     private Long requestId;

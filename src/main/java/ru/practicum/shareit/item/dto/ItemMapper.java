@@ -11,13 +11,14 @@ public class ItemMapper {
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .ownerId(item.getOwnerId() != null ? item.getOwnerId() : null)
-                .requestId(item.getRequestId() != null ? item.getRequestId() : null)
+                .ownerId(item.getOwner() != null ? item.getOwner().getId() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .available(item.getAvailable())
                 .build();
     }
 
     public Item fromDto(ItemDto itemDto) {
+        //todo подтягивать из репозитория
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
@@ -28,6 +29,7 @@ public class ItemMapper {
     }
 
     public Item fromDto(ItemDto itemDto, Long id) {
+        //todo подтягивать из репозитория
         return Item.builder()
                 .id(id)
                 .name(itemDto.getName())

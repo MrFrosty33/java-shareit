@@ -8,18 +8,20 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS requests (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     description varchar(1000) NOT NULL,
-    request_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
     created_at date NOT NULL,
     -- не забывать, чтобы было на что ссылаться, эта таблица и поле уже должно существовать!!!
-    CONSTRAINT fk_requests_to_user FOREIGN KEY(request_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_requests_to_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- запроса, как и владельца, может не быть
+-- если предмет привязан к владельцу - может не быть запроса. Если был создан запрос - может не быть владельца
 CREATE TABLE IF NOT EXISTS items (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name varchar(100) NOT NULL,
     description varchar(1000) NOT NULL,
-    owner_id BIGINT NOT NULL,
-    request_id BIGINT NOT NULL,
+    owner_id BIGINT,
+    request_id BIGINT,
     availability boolean NOT NULL,
     CONSTRAINT fk_items_to_user FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_items_to_request FOREIGN KEY(request_id) REFERENCES requests(id) ON DELETE CASCADE
