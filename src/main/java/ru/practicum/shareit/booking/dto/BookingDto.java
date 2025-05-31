@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Data
 @Builder(toBuilder = true)
 public class BookingDto {
+    private Long id;
+
     @NotNull(message = "ошибка валидации, startDate не может быть null")
     @FutureOrPresent(message = "ошибка валидации, startDate не может быть в прошлом")
     private LocalDate startDate;

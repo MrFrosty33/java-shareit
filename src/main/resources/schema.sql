@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     end_date date NOT NULL,
     item_id BIGINT NOT NULL,
     booker_id BIGINT NOT NULL,
+    status varchar(100) NOT NULL,
     CONSTRAINT fk_bookings_to_item FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
     CONSTRAINT fk_bookings_to_user FOREIGN KEY(booker_id) REFERENCES users(id) ON DELETE CASCADE
 );

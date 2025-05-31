@@ -1,37 +1,51 @@
 package ru.practicum.shareit.booking;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
+@Entity
+@Table(name = "bookings")
 public class Booking {
-    @Positive(message = "ошибка валидации, id должно быть положительным числом")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "ошибка валидации, startDate не может быть null")
-    @FutureOrPresent(message = "ошибка валидации, startDate не может быть в прошлом")
+    @Column(name = "start_date")
     private LocalDate startDate;
 
-    @NotNull(message = "ошибка валидации, endDate не может быть null")
-    @FutureOrPresent(message = "ошибка валидации, endDate не может быть в прошлом")
+    @Column(name = "end_date")
     private LocalDate endDate;
 
-    @NotNull(message = "ошибка валидации, itemId не может быть null")
-    @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
-    private Long itemId;
+    // у одного предмета может быть несколько броней
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
-    @NotNull(message = "ошибка валидации, bookerId не может быть null")
-    @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
-    private Long bookerId;
+    // у одного пользователя может быть несколько броней
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booker_id")
+    private User booker;
 
-    @NotNull(message = "ошибка валидации, status не может быть null")
+    @Enumerated(value = EnumType.STRING)
+    @Column
     private Status status;
-
-
 }

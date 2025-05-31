@@ -34,6 +34,8 @@ public class Item {
     @Column
     private String description;
 
+    // стоит ли их подтягивать сразу, или всё же, как понадобятся?
+    // в целом, везде пока только в едином числе другие сущности, нагружать БД сильно не должно
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;

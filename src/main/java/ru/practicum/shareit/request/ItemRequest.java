@@ -1,25 +1,37 @@
 package ru.practicum.shareit.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
-    @Positive(message = "ошибка валидации, id должно быть положительным числом")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "ошибка валидации, description не может быть null / Blank")
-    @Size(max = 1000, message = "ошшибка валидации, длина description не может превышать 1000 символов")
+    @Column
     private String description;
 
-    @Positive(message = "ошибка валидации, requesterId должно быть положительным числом")
-    private Long requesterId;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User requester;
 
-    private LocalDate created;
+    @Column(name = "created_at")
+    private LocalDate created = LocalDate.now();
 }
