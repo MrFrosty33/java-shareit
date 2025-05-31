@@ -1,10 +1,15 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemRepository;
 
 @Component
+@RequiredArgsConstructor
 public class ItemMapper {
+    private final ItemRepository itemRepository;
+
 
     public ItemDto toDto(Item item) {
         return ItemDto.builder()
@@ -18,25 +23,27 @@ public class ItemMapper {
     }
 
     public Item fromDto(ItemDto itemDto) {
-        //todo подтягивать из репозитория
-        return Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
-                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .available(itemDto.getAvailable())
-                .build();
+        //todo нужен userRepository & requestRepository
+//        return Item.builder()
+//                .name(itemDto.getName())
+//                .description(itemDto.getDescription())
+//                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
+//                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
+//                .available(itemDto.getAvailable())
+//                .build();
+        return null;
     }
 
     public Item fromDto(ItemDto itemDto, Long id) {
-        //todo подтягивать из репозитория
-        return Item.builder()
-                .id(id)
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
-                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .available(itemDto.getAvailable())
-                .build();
+        //todo нужен userRepository & requestRepository
+//        return Item.builder()
+//                .id(id)
+//                .name(itemDto.getName())
+//                .description(itemDto.getDescription())
+//                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
+//                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
+//                .available(itemDto.getAvailable())
+//                .build();
+        return null;
     }
 }

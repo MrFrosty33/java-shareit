@@ -10,12 +10,13 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ItemServiceImpl implements ItemService {
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
     private final UserService userService;
     private final ItemMapper itemMapper;
 
@@ -27,7 +28,11 @@ public class ItemServiceImpl implements ItemService {
         // по ТЗ информацию о предмете может получить любой пользователь
         userService.validateUserExists(userId);
 
-        ItemDto result = itemMapper.toDto(itemStorage.get(itemId));
+        ItemDto result = itemMapper.toDto(itemRepository.findById(itemId)
+                .orElseThrow(() -> {
+                    log.info("Попытка найти Item с id: {}", itemId);
+                    return new NotFoundException("Item с id: " + itemId + " не найден");
+                }));
         log.info("Получен Item с id: {}", itemId);
         return result;
     }
@@ -36,8 +41,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAllItemsByUserId(Long userId) {
         userService.validateUserExists(userId);
 
-        List<ItemDto> result = itemStorage.getAll().stream()
-                .filter(item -> item.getOwnerId().equals(userId))
+        List<ItemDto> result = itemRepository.findAll().stream()
+                .filter(item -> item.getOwner().getId().equals(userId))
                 .map(itemMapper::toDto)
                 .toList();
         log.info("Получен список всех Item у пользователя с id: {}", userId);
@@ -56,7 +61,8 @@ public class ItemServiceImpl implements ItemService {
                                 && item.getAvailable())
                 .toList();
         log.info("Полученный список всех Item был отфильтрован, " +
-                "содержащие text: {} в имени или описании экземпляры со статусом available: true были переданы далее", text);
+                "содержащие text: {} в имени или описании экземпляры со статусом available: " +
+                "true были переданы далее", text);
         return result;
     }
 
@@ -64,46 +70,66 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto save(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
         itemDto.setOwnerId(userId);
-        ItemDto result = itemMapper.toDto(itemStorage.save(itemMapper.fromDto(itemDto)));
+        ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto)));
         log.info("Сохранён Item с id: {}", result.getId());
         return result;
     }
 
     @Override
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
+        // Важно проверять, существует ли уже запись в БД
+        // если не существует, то вместо обновления сохранится новая запись, а это не то, что мы хотим,
+        // но может быть ошибка, т.к. ID назначается тут вручную и он уже может быть занят
+        validateItemExists(itemId);
         userService.validateUserExists(userId);
 
-        // я правильно понимаю, что на данный момент проверка на владельца вещи должна выглядеть примерно так?
         if (itemDto.getOwnerId() != null && !itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
             throw new ConflictException("ownerId: " + itemDto.getOwnerId() +
                     " отличается от переданного userId: " + userId);
         }
 
-        ItemDto result = itemMapper.toDto(itemStorage.update(itemMapper.fromDto(itemDto, itemId)));
+        ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto, itemId)));
         log.info("Обновлён Item с id: {}", itemId);
         return result;
     }
 
     @Override
-    public boolean delete(Long itemId, Long userId) {
-        validateItemExists(itemId);
+    public void delete(Long itemId, Long userId) {
         userService.validateUserExists(userId);
-        boolean result = itemStorage.delete(itemId);
-        log.info("Удалён Item с id: {}", itemId);
-        return result;
+
+        Optional<Item> findItemResult = itemRepository.findById(itemId);
+
+        if (findItemResult.isPresent()) {
+            Item item = findItemResult.get();
+
+            if (item.getOwner() != null && !item.getOwner().getId().equals(userId)) {
+                log.info("Попытка удалить Item, но ownerId: {} не сходится с userId: {}",
+                        item.getOwner().getId(), userId);
+                throw new ConflictException("ownerId: " + item.getOwner().getId() +
+                        " отличается от переданного userId: " + userId);
+            }
+
+            itemRepository.delete(item);
+            log.info("Удалён Item с id: {}", itemId);
+        } else {
+            log.info("Попытка удалить несуществующий Item с id: {}", itemId);
+        }
     }
 
     @Override
-    public boolean deleteAll() {
-        boolean result = itemStorage.deleteAll();
-        log.info("Очищено хранилище Item");
-        return result;
+    public void deleteAll() {
+        if (itemRepository.findAll().isEmpty()) {
+            log.info("Попытка очистить таблицу Item, но она уже пуста");
+        } else {
+            itemRepository.deleteAll();
+            log.info("Очищено таблица Item");
+        }
     }
 
     @Override
     public void validateItemExists(Long id) {
-        if (!itemStorage.getIds().contains(id)) {
+        if (itemRepository.findById(id).isEmpty()) {
             log.info("Попытка найти Item с id: {}", id);
             throw new NotFoundException("Item с id: " + id + " не найден");
         }

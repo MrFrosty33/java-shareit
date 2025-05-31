@@ -15,9 +15,9 @@ public interface ItemService {
 
     ItemDto update(ItemDto item, Long itemId, Long userId);
 
-    boolean delete(Long itemId, Long userId);
+    void delete(Long itemId, Long userId);
 
-    boolean deleteAll();
+    void deleteAll();
 
     void validateItemExists(Long id);
 }

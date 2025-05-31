@@ -33,5 +33,5 @@ public class ItemRequest {
     private User requester;
 
     @Column(name = "created_at")
-    private LocalDate created = LocalDate.now();
+    private LocalDate created;
 }

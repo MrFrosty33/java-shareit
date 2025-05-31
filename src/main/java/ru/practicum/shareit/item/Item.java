@@ -46,11 +46,4 @@ public class Item {
 
     @Column(name = "availability")
     private Boolean available;
-
-    @Getter
-    private Long rentalCount = 0L;
-
-    public void increaseRentalCount() {
-        rentalCount++;
-    }
 }

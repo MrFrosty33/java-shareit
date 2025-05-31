@@ -20,5 +20,6 @@ public class ItemRequestDto {
     @Positive(message = "ошибка валидации, requesterId должно быть положительным числом")
     private Long requesterId;
 
-    private LocalDate created;
+    @Builder.Default
+    private LocalDate created = LocalDate.now();
 }
