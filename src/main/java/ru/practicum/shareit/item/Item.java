@@ -40,6 +40,7 @@ public class Item {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    // Только ли один запрос может быть у предмета?
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private ItemRequest request;

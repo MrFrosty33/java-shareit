@@ -83,8 +83,6 @@ public class ItemServiceImpl implements ItemService {
         // Важно проверять, существует ли уже запись в БД
         // если не существует, то вместо обновления сохранится новая запись, а это не то, что мы хотим,
         // но может быть ошибка, т.к. ID назначается тут вручную и он уже может быть занят
-
-        //todo подумать ещё над методом. Если поля Null - так и перезапишется в БД...
         validateItemExists(itemId);
         userService.validateUserExists(userId);
 
@@ -94,9 +92,9 @@ public class ItemServiceImpl implements ItemService {
                     " отличается от переданного userId: " + userId);
         }
 
-        ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto, itemId)));
+        itemRepository.updateItem(itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemId);
         log.info("Обновлён Item с id: {}", itemId);
-        return result;
+        return get(itemId, userId);
     }
 
     @Transactional
