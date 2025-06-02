@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
@@ -18,7 +21,10 @@ import java.util.Optional;
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final UserService userService;
+    private final CommentMapper commentMapper;
     private final ItemMapper itemMapper;
 
     @Override
@@ -75,6 +81,20 @@ public class ItemServiceImpl implements ItemService {
         ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto)));
         log.info("Сохранён Item с id: {}", result.getId());
         return result;
+    }
+
+    @Transactional
+    @Override
+    public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
+        validateItemExists(itemId);
+        if (!bookingRepository.findAllByBookerIdAndItemId(userId, itemId).isEmpty()) {
+            CommentDto result = commentMapper.toDto(commentRepository.save(commentMapper.fromDto(commentDto)));
+            log.info("");
+            return result;
+        } else {
+            log.info("");
+            throw new ConflictException("");
+        }
     }
 
     @Transactional

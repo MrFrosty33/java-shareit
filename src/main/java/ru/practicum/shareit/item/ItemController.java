@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.markers.OnCreate;
 import ru.practicum.shareit.markers.OnUpdate;
@@ -61,6 +62,17 @@ public class ItemController {
                         @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                         Long userId) {
         return itemService.save(itemDto, userId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@Validated @RequestBody CommentDto commentDto,
+                                 @PathVariable
+                                 @NotNull(message = "ошибка валидации, itemId не может быть null")
+                                 @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
+                                 Long itemId,
+                                 @RequestHeader("X-Sharer-User-Id")
+                                 @Positive(message = "ошибка валидации, userId должно быть положительным числом") Long userId) {
+        return itemService.addComment(commentDto, itemId, userId);
     }
 
     @PatchMapping("/{itemId}")

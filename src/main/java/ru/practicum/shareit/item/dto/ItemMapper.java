@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -13,7 +13,8 @@ import ru.practicum.shareit.user.UserRepository;
 @RequiredArgsConstructor
 @Slf4j
 public class ItemMapper {
-    private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
     private final UserRepository userRepository;
     private final ItemRequestRepository requestRepository;
 
@@ -25,6 +26,9 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .ownerId(item.getOwner() != null ? item.getOwner().getId() : null)
                 .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
+                .comments(commentRepository.findAllByItemId(item.getId()).stream()
+                        .map(commentMapper::toDto)
+                        .toList())
                 .available(item.getAvailable())
                 .build();
     }

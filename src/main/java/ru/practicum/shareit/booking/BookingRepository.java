@@ -89,4 +89,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             WHERE b.id = :bookingId
             """)
     Booking updateStatus(@Param("bookingId") Long bookingId, @Param("status") Status status);
+
+    List<Booking> findAllByBookerIdAndItemId(Long bookerId, Long itemId);
 }

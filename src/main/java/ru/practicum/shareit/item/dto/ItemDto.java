@@ -9,6 +9,8 @@ import lombok.Data;
 import ru.practicum.shareit.markers.OnCreate;
 import ru.practicum.shareit.markers.OnUpdate;
 
+import java.util.List;
+
 @Data
 @Builder(toBuilder = true)
 public class ItemDto {
@@ -33,6 +35,8 @@ public class ItemDto {
     @Positive(message = "ошибка валидации, requestId должно быть положительным числом",
             groups = {OnCreate.class, OnUpdate.class})
     private Long requestId;
+
+    private List<CommentDto> comments;
 
     @NotNull(message = "ошибка валидации, available не может быть null", groups = {OnCreate.class})
     private Boolean available;
