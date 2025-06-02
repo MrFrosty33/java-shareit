@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) {
-        //todo подумать ещё над методом. Если поля Null - так и перезапишется в БД...
         validateUserExists(id);
+
 
         UserDto result = userMapper.toDto(userRepository.save(userMapper.fromDto(userDto, id)));
         log.info("Обновлён User с id: {}", id);
