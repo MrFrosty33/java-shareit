@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -48,11 +49,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto, Long id) {
         validateUserExists(id);
+        if (userRepository.getEmails(id).contains(userDto.getEmail())) {
+            log.info("Попытка обновить email у пользователя с id: {} на уже занятый email: {}", id, userDto.getEmail());
+            throw new ConflictException("Email: " + userDto.getEmail() + " уже занят другим пользователем");
+        }
 
-
-        UserDto result = userMapper.toDto(userRepository.save(userMapper.fromDto(userDto, id)));
+        userRepository.updateUser(userDto.getName(), userDto.getEmail(), id);
         log.info("Обновлён User с id: {}", id);
-        return result;
+        return get(id);
     }
 
     @Transactional
