@@ -22,10 +22,8 @@ public class UserMapper {
     }
 
     public User fromDto(UserDto userDto, Long id) {
-        return User.builder()
-                .id(id)
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+        User result = fromDto(userDto);
+        result.setId(id);
+        return result;
     }
 }

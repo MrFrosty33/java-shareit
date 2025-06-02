@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
@@ -15,10 +17,16 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
+    private final BookingMapper bookingMapper;
 
     @Override
     public BookingDto get(Long id, Long bookerOrItemOwnerId) {
         //todo Может быть выполнено либо автором бронирования, либо владельцем вещи
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> {
+            log.info("Попытка найти Booking с id: {}", id);
+            return new NotFoundException("Booking с id: " + id + " не найден");
+        });
+
         return null;
     }
 
