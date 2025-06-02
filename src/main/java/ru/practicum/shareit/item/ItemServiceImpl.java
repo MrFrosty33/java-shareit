@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -66,6 +67,7 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
+    @Transactional
     @Override
     public ItemDto save(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
@@ -75,11 +77,14 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
+    @Transactional
     @Override
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         // Важно проверять, существует ли уже запись в БД
         // если не существует, то вместо обновления сохранится новая запись, а это не то, что мы хотим,
         // но может быть ошибка, т.к. ID назначается тут вручную и он уже может быть занят
+
+        //todo подумать ещё над методом. Если поля Null - так и перезапишется в БД...
         validateItemExists(itemId);
         userService.validateUserExists(userId);
 
@@ -94,6 +99,7 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
+    @Transactional
     @Override
     public void delete(Long itemId, Long userId) {
         userService.validateUserExists(userId);
@@ -117,6 +123,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteAll() {
         if (itemRepository.findAll().isEmpty()) {

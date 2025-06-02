@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    @Transactional
     @Override
     public UserDto save(UserDto userDto) {
         UserDto result = userMapper.toDto(userRepository.save(userMapper.fromDto(userDto)));
@@ -42,8 +44,10 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) {
+        //todo подумать ещё над методом. Если поля Null - так и перезапишется в БД...
         validateUserExists(id);
 
         UserDto result = userMapper.toDto(userRepository.save(userMapper.fromDto(userDto, id)));
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         validateUserExists(id);
@@ -58,6 +63,7 @@ public class UserServiceImpl implements UserService {
         log.info("Удалён User с id: {}", id);
     }
 
+    @Transactional
     @Override
     public void deleteAll() {
         if (userRepository.findAll().isEmpty()) {
