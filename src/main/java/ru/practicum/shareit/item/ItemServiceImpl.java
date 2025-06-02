@@ -88,8 +88,8 @@ public class ItemServiceImpl implements ItemService {
 
         if (itemDto.getOwnerId() != null && !itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
-            throw new ConflictException("ownerId: " + itemDto.getOwnerId() +
-                    " отличается от переданного userId: " + userId);
+            throw new ConflictException("В доступе отказано, ownerId: " + itemDto.getOwnerId() +
+                    " отличается от Вашего userId: " + userId);
         }
 
         itemRepository.updateItem(itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemId);
@@ -111,7 +111,7 @@ public class ItemServiceImpl implements ItemService {
                 log.info("Попытка удалить Item, но ownerId: {} не сходится с userId: {}",
                         item.getOwner().getId(), userId);
                 throw new ConflictException("ownerId: " + item.getOwner().getId() +
-                        " отличается от переданного userId: " + userId);
+                        " отличается от Вашего userId: " + userId);
             }
 
             itemRepository.delete(item);

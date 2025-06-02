@@ -76,7 +76,7 @@ public class BookingController {
                                      Long ownerId,
                                      @RequestParam
                                      @NotNull(message = "ошибка валидации, approved не может быть null")
-                                     boolean approved) {
+                                         Boolean approved) {
         return bookingService.approveBooking(bookingId, ownerId, approved);
     }
 

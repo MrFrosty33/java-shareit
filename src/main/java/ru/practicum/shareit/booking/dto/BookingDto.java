@@ -36,6 +36,6 @@ public class BookingDto {
             groups = {OnCreate.class, OnUpdate.class})
     private Long bookerId;
 
-    @NotNull(message = "ошибка валидации, status не может быть null", groups = {OnCreate.class})
-    private Status status;
+    @Builder.Default
+    private Status status = Status.WAITING;
 }

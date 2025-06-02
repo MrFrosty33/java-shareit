@@ -9,9 +9,11 @@ public interface BookingService {
 
     List<BookingDto> getAllByStateAndBookerId(State state, Long bookerId);
 
-    List<BookingDto> getAllByStateAndOwnerId(State state, Long bookerId);
+    List<BookingDto> getAllByStateAndOwnerId(State state, Long ownerId);
 
     BookingDto save(BookingDto booking, Long bookerId);
 
-    BookingDto approveBooking(Long bookingId, Long ownerId, boolean approved);
+    BookingDto approveBooking(Long bookingId, Long ownerId, Boolean approved);
+
+    void validateBookingExists(Long id);
 }

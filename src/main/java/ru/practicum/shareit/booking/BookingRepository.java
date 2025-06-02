@@ -88,5 +88,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             SET b.status = :status
             WHERE b.id = :bookingId
             """)
-    Booking updateStatus(@Param("bookingId") Long bookingId, @Param("status") String status);
+    Booking updateStatus(@Param("bookingId") Long bookingId, @Param("status") Status status);
 }
