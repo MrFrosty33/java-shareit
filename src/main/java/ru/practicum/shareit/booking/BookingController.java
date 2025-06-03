@@ -38,22 +38,22 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getAllByStateAndBookerId
-            (@RequestParam(name = "state", required = false, defaultValue = "ALL")
-             String param,
-             @RequestHeader("X-Sharer-User-Id")
-             @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
-             Long bookerId) {
+    public List<BookingDto> getAllByStateAndBookerId(
+            @RequestParam(name = "state", required = false, defaultValue = "ALL")
+            String param,
+            @RequestHeader("X-Sharer-User-Id")
+            @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
+            Long bookerId) {
         return bookingService.getAllByStateAndBookerId(State.stateValue(param), bookerId);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getAllByStateAndOwnerId
-            (@RequestParam(name = "state", required = false, defaultValue = "ALL")
-             String param,
-             @RequestHeader("X-Sharer-User-Id")
-             @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
-             Long ownerId) {
+    public List<BookingDto> getAllByStateAndOwnerId(
+            @RequestParam(name = "state", required = false, defaultValue = "ALL")
+            String param,
+            @RequestHeader("X-Sharer-User-Id")
+            @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
+            Long ownerId) {
         return bookingService.getAllByStateAndOwnerId(State.stateValue(param), ownerId);
     }
 
