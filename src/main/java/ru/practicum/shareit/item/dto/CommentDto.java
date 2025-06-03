@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Builder(toBuilder = true)
 public class CommentDto {
@@ -20,4 +22,11 @@ public class CommentDto {
     @NotNull(message = "ошибка валидации, itemId не может быть Null")
     @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
     private Long itemId;
+
+    @NotNull(message = "ошибка валидации, userId не может быть Null")
+    @Positive(message = "ошибка валидации, userId должно быть положительным числом")
+    private Long userId;
+
+    @Builder.Default
+    private LocalDate created = LocalDate.now();
 }

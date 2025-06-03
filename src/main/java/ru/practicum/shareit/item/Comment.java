@@ -8,10 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.user.User;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -29,4 +33,11 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @OneToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
+    @Column(name = "created_at")
+    private LocalDate created;
 }
