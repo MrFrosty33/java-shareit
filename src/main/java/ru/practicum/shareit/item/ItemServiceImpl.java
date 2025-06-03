@@ -126,9 +126,20 @@ public class ItemServiceImpl implements ItemService {
                     " отличается от Вашего userId: " + userId);
         }
 
-        itemRepository.updateItem(itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemId);
+        // можно ли обновлять владельца и запросы?
+        Item item = itemRepository.findById(itemId).get();
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
+            item.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
+            item.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
+
         log.info("Обновлён Item с id: {}", itemId);
-        return get(itemId, userId);
+        return itemMapper.toDto(item);
     }
 
     @Transactional

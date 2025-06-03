@@ -34,19 +34,24 @@ public class ItemMapper {
     }
 
     public Item fromDto(ItemDto itemDto) {
-        return Item.builder()
+        Item result = Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .owner(userRepository.findById(itemDto.getOwnerId()).orElseThrow(() -> {
-                    log.info("Попытка найти User с id: {}", itemDto.getOwnerId());
-                    return new NotFoundException("Owner с id: " + itemDto.getOwnerId() + " не найден");
-                }))
-                .request(requestRepository.findById(itemDto.getRequestId()).orElseThrow(() -> {
-                    log.info("Попытка найти ItemRequest с id: {}", itemDto.getRequestId());
-                    return new NotFoundException("Request с id: " + itemDto.getRequestId() + " не найден");
-                }))
                 .available(itemDto.getAvailable())
                 .build();
+        if (itemDto.getOwnerId() != null) {
+            result.setOwner(userRepository.findById(itemDto.getOwnerId()).orElseThrow(() -> {
+                log.info("Попытка найти User с id: {}", itemDto.getOwnerId());
+                return new NotFoundException("Owner с id: " + itemDto.getOwnerId() + " не найден");
+            }));
+        }
+        if (itemDto.getRequestId() != null) {
+            result.setRequest(requestRepository.findById(itemDto.getRequestId()).orElseThrow(() -> {
+                log.info("Попытка найти ItemRequest с id: {}", itemDto.getRequestId());
+                return new NotFoundException("Request с id: " + itemDto.getRequestId() + " не найден");
+            }));
+        }
+        return result;
     }
 
     public Item fromDto(ItemDto itemDto, Long id) {
