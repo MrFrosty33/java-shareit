@@ -54,9 +54,12 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException("Email: " + userDto.getEmail() + " уже занят другим пользователем");
         }
 
-        userRepository.updateUser(userDto.getName(), userDto.getEmail(), id);
+        User user = userRepository.findById(id).get();
+        if (userDto.getName() != null && !userDto.getName().isBlank()) user.setName(userDto.getName());
+        if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
         log.info("Обновлён User с id: {}", id);
-        return get(id);
+        // т.к. @Transactional, вызов метода репозитория save не требуется
+        return userMapper.toDto(user);
     }
 
     @Transactional

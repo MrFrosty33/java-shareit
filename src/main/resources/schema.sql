@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at date NOT NULL,
     CONSTRAINT fk_comments_to_item FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
     CONSTRAINT fk_comments_to_user FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS bookings (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
