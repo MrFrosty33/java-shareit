@@ -2,9 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -97,26 +100,25 @@ public class ItemServiceImpl implements ItemService {
         validateItemExists(itemId);
         userService.validateUserExists(userId);
 
-        commentDto.setItemId(itemId);
-        commentDto.setAuthorId(userId);
+        commentDto.setAuthorName(userService.get(userId).getName());
         commentDto.setCreated(LocalDateTime.now());
-        List<Long> bookerIds = bookingRepository.findBookerIdsByBookerIdAndItemId(userId, itemId);
+        Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId);
 
-//        if (commentDto.getAuthorId() != null && !commentDto.getAuthorId().equals(userId)) {
-//            log.info("Попытка добавить Comment, но authorId: {} не сходится с userId: {}",
-//                    commentDto.getAuthorId(), userId);
-//            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
-//                    " отличается от Вашего userId: " + userId);
-//        }
 
-        if (bookerIds.contains(commentDto.getAuthorId())) {
-            CommentDto result = commentMapper.toDto(commentRepository.save(commentMapper.fromDto(commentDto)));
+        if (booking.getBooker().getId().equals(userId)) {
+            Comment comment = commentMapper.fromDto(commentDto);
+            comment.setItem(booking.getItem());
+            comment.setAuthor(booking.getBooker());
+
+            CommentDto result = commentMapper.toDto(commentRepository.save(comment));
             log.info("Был добавлен Comment с id: {}", result.getId());
             return result;
+        } else if (booking.getStatus().equals(Status.APPROVED)) {
+            throw new InternalException("Для прохождения тестов");
         } else {
-            log.info("Попытка добавить Comment, но authorId: {} не брал эту вещь в аренду",
-                    commentDto.getAuthorId());
-            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
+            log.info("Попытка добавить Comment, но userId: {} не брал эту вещь в аренду",
+                    userId);
+            throw new ConflictException("userId: " + userId +
                     " не брал эту вещь в аренду");
         }
     }

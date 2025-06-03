@@ -4,12 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    //todo вопрос по методу сортировки. По финальной ли дате сортировать?
-
     @Query("""
             SELECT b FROM Booking b
             WHERE b.booker.id = :bookerId
@@ -45,28 +43,28 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             WHERE b.booker.id = :bookerId AND b.startDate <= :date AND b.endDate >= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findCurrentByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDate date);
+    List<Booking> findCurrentByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.item.owner.id = :ownerId AND b.startDate <= :date AND b.endDate >= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findCurrentByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDate date);
+    List<Booking> findCurrentByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.booker.id = :bookerId AND b.endDate <= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findPastByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDate date);
+    List<Booking> findPastByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.item.owner.id = :ownerId AND b.endDate <= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findPastByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDate date);
+    List<Booking> findPastByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDateTime date);
 
 
     @Query("""
@@ -74,18 +72,54 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             WHERE b.booker.id = :bookerId AND b.startDate >= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findFutureByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDate date);
+    List<Booking> findFutureByBookerId(@Param("bookerId") Long bookerId, @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.item.owner.id = :ownerId AND b.startDate >= :date
             ORDER BY b.endDate DESC
             """)
-    List<Booking> findFutureByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDate date);
+    List<Booking> findFutureByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b.booker.id FROM Booking b
             WHERE b.booker.id = :bookerId AND b.item.id = :itemId
             """)
     List<Long> findBookerIdsByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
+
+    @Query("""
+            SELECT b.status FROM Booking b
+            WHERE b.booker.id = :bookerId AND b.item.id = :itemId
+            AND b.endDate < CURRENT_TIMESTAMP
+            ORDER BY b.endDate DESC
+            """)
+    Status getLastBookingStatusByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.booker.id = :bookerId
+            AND b.item.id = :itemId
+            AND b.endDate < CURRENT_TIMESTAMP
+            ORDER BY b.endDate DESC
+            LIMIT 1
+            """)
+    Booking getLastBookingByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.item.id = :itemId
+            AND b.startDate > CURRENT_TIMESTAMP
+            ORDER BY b.startDate ASC
+            LIMIT 1
+            """)
+    Booking findNextBooking(@Param("itemId") Long itemId);
+
+    @Query("""
+            SELECT b FROM Booking b
+            WHERE b.item.id = :itemId
+            AND b.endDate < CURRENT_TIMESTAMP
+            ORDER BY b.endDate DESC
+            LIMIT 1
+            """)
+    Booking findPreviousBooking(@Param("itemId") Long itemId);
 }

@@ -17,11 +17,8 @@ public class CommentDto {
     @Size(max = 1000, message = "ошибка валидации, длина text не может превышать 1000 символов")
     private String text;
 
-    @Positive(message = "ошибка валидации, itemId должно быть положительным числом")
-    private Long itemId;
-
     @Positive(message = "ошибка валидации, userId должно быть положительным числом")
-    private Long authorId;
+    private String authorName;
 
     private LocalDateTime created;
 }

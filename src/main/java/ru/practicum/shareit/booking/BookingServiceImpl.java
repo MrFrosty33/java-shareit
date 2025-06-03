@@ -15,7 +15,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.UserService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -57,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
         userService.validateUserExists(bookerId);
 
         List<BookingDto> result;
-        LocalDate dateNow = LocalDate.now();
+        LocalDateTime dateNow = LocalDateTime.now();
 
         switch (state) {
             case ALL -> {
@@ -105,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         List<BookingDto> result;
-        LocalDate dateNow = LocalDate.now();
+        LocalDateTime dateNow = LocalDateTime.now();
 
         switch (state) {
             case ALL -> {

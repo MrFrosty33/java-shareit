@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS requests (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     description varchar(1000) NOT NULL,
     user_id BIGINT NOT NULL,
-    created_at date NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     -- не забывать, чтобы было на что ссылаться, эта таблица и поле уже должно существовать!!!
     CONSTRAINT fk_requests_to_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );

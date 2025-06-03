@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
@@ -19,8 +18,7 @@ public class CommentMapper {
         return CommentDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .itemId(comment.getItem().getId())
-                .authorId(comment.getAuthor().getId())
+                .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
                 .build();
     }
@@ -28,14 +26,6 @@ public class CommentMapper {
     public Comment fromDto(CommentDto commentDto) {
         return Comment.builder()
                 .text(commentDto.getText())
-                .item(itemRepository.findById(commentDto.getItemId()).orElseThrow(() -> {
-                    log.info("Попытка найти Item с id: {}", commentDto.getItemId());
-                    return new NotFoundException("Item с id: " + commentDto.getItemId() + " не найден");
-                }))
-                .author(userRepository.findById(commentDto.getAuthorId()).orElseThrow(() -> {
-                    log.info("Попытка найти User с id: {}", commentDto.getAuthorId());
-                    return new NotFoundException("Author с id: " + commentDto.getAuthorId() + " не найден");
-                }))
                 .created(commentDto.getCreated())
                 .build();
     }

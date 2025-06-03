@@ -36,6 +36,10 @@ public class ItemDto {
             groups = {OnCreate.class, OnUpdate.class})
     private Long requestId;
 
+    // нужно для тестов, но не требовалось реализовывать вроде пока
+    private Long lastBooking;
+    private Long nextBooking;
+
     private List<CommentDto> comments;
 
     @NotNull(message = "ошибка валидации, available не может быть null", groups = {OnCreate.class})
