@@ -25,7 +25,7 @@ public class CommentDto {
 
     @NotNull(message = "ошибка валидации, userId не может быть Null")
     @Positive(message = "ошибка валидации, userId должно быть положительным числом")
-    private Long userId;
+    private Long authorId;
 
     @Builder.Default
     private LocalDate created = LocalDate.now();
