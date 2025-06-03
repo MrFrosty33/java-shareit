@@ -87,13 +87,27 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
         validateItemExists(itemId);
-        if (!bookingRepository.findAllByBookerIdAndItemId(userId, itemId).isEmpty()) {
+        userService.validateUserExists(userId);
+        userService.validateUserExists(commentDto.getAuthorId());
+        List<Long> bookerIds = bookingRepository.findBookerIdsByBookerIdAndItemId(userId, itemId);
+
+        // кто может добавлять комментарии? Только же автор комментария?
+        if (!commentDto.getAuthorId().equals(userId)) {
+            log.info("Попытка добавить Comment, но authorId: {} не сходится с userId: {}",
+                    commentDto.getAuthorId(), userId);
+            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
+                    " отличается от Вашего userId: " + userId);
+        }
+
+        if (bookerIds.contains(commentDto.getAuthorId())) {
             CommentDto result = commentMapper.toDto(commentRepository.save(commentMapper.fromDto(commentDto)));
-            log.info("");
+            log.info("Был добавлен Comment с id: {}", result.getId());
             return result;
         } else {
-            log.info("");
-            throw new ConflictException("");
+            log.info("Попытка добавить Comment, но authorId: {} не брал эту вещь в аренду",
+                    commentDto.getAuthorId());
+            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
+                    " не брал эту вещь в аренду");
         }
     }
 

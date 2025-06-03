@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -83,12 +84,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     List<Booking> findFutureByOwnerId(@Param("ownerId") Long ownerId, @Param("date") LocalDate date);
 
+    @Modifying
     @Query("""
             UPDATE Booking b
             SET b.status = :status
             WHERE b.id = :bookingId
             """)
-    Booking updateStatus(@Param("bookingId") Long bookingId, @Param("status") Status status);
+    void updateStatus(@Param("bookingId") Long bookingId, @Param("status") Status status);
 
-    List<Booking> findAllByBookerIdAndItemId(Long bookerId, Long itemId);
+    @Query("""
+            SELECT b.booker.id FROM Booking b
+            WHERE b.booker.id = :bookerId AND b.item.id = :itemId
+            """)
+    List<Long> findBookerIdsByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
 }

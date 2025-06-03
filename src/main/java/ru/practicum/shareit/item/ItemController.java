@@ -64,6 +64,7 @@ public class ItemController {
         return itemService.save(itemDto, userId);
     }
 
+    // нужен ли тут RequestHeader, или же id автора берём из полученного Dto объекта?
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@Validated @RequestBody CommentDto commentDto,
                                  @PathVariable
