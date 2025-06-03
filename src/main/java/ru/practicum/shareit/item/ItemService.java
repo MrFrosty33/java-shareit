@@ -10,6 +10,8 @@ public interface ItemService {
 
     List<ItemDto> getAllItemsByUserId(Long userId);
 
+    Boolean isItemAvailable(Long itemId);
+
     List<ItemDto> search(String text, Long userId);
 
     ItemDto save(ItemDto item, Long userId);

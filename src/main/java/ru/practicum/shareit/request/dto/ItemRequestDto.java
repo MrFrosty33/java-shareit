@@ -27,6 +27,5 @@ public class ItemRequestDto {
             groups = {OnCreate.class, OnUpdate.class})
     private Long requesterId;
 
-    @Builder.Default
-    private LocalDate created = LocalDate.now();
+    private LocalDate created;
 }

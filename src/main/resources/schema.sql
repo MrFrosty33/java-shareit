@@ -32,15 +32,15 @@ CREATE TABLE IF NOT EXISTS comments (
     text varchar (1000) NOT NULL,
     item_id BIGINT NOT NULL,
     author_id BIGINT NOT NULL,
-    created_at date NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_comments_to_item FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
     CONSTRAINT fk_comments_to_user FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    start_date date NOT NULL,
-    end_date date NOT NULL,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL,
     item_id BIGINT NOT NULL,
     booker_id BIGINT NOT NULL,
     status varchar(100) NOT NULL,

@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Boolean isItemAvailable(Long itemId) {
+        Boolean result = itemRepository.isItemAvailable(itemId);
+        log.info("Получена информация о доступносте Item с itemId: {}", itemId);
+        return result;
+    }
+
+    @Override
     public List<ItemDto> search(String text, Long userId) {
         if (text.isEmpty()) return List.of();
         String textEdited = text.toLowerCase();
@@ -88,16 +96,18 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
         validateItemExists(itemId);
         userService.validateUserExists(userId);
-        userService.validateUserExists(commentDto.getAuthorId());
+
+        commentDto.setItemId(itemId);
+        commentDto.setAuthorId(userId);
+        commentDto.setCreated(LocalDateTime.now());
         List<Long> bookerIds = bookingRepository.findBookerIdsByBookerIdAndItemId(userId, itemId);
 
-        // кто может добавлять комментарии? Только же автор комментария?
-        if (!commentDto.getAuthorId().equals(userId)) {
-            log.info("Попытка добавить Comment, но authorId: {} не сходится с userId: {}",
-                    commentDto.getAuthorId(), userId);
-            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
-                    " отличается от Вашего userId: " + userId);
-        }
+//        if (commentDto.getAuthorId() != null && !commentDto.getAuthorId().equals(userId)) {
+//            log.info("Попытка добавить Comment, но authorId: {} не сходится с userId: {}",
+//                    commentDto.getAuthorId(), userId);
+//            throw new ConflictException("authorId: " + commentDto.getAuthorId() +
+//                    " отличается от Вашего userId: " + userId);
+//        }
 
         if (bookerIds.contains(commentDto.getAuthorId())) {
             CommentDto result = commentMapper.toDto(commentRepository.save(commentMapper.fromDto(commentDto)));

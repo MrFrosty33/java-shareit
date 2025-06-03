@@ -1,41 +1,25 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.markers.OnCreate;
-import ru.practicum.shareit.markers.OnUpdate;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder(toBuilder = true)
 public class BookingDto {
     private Long id;
 
-    @NotNull(message = "ошибка валидации, startDate не может быть null", groups = {OnCreate.class})
-    // обновление может происходить в будущем, и стоит оставить возможность установить дату в прошлом
-    // поэтому только лишь OnCreate в группах для валидаций указан
-    @FutureOrPresent(message = "ошибка валидации, startDate не может быть в прошлом", groups = {OnCreate.class})
-    private LocalDate startDate;
+    private ItemDto item;
 
-    @NotNull(message = "ошибка валидации, endDate не может быть null", groups = {OnCreate.class})
-    @FutureOrPresent(message = "ошибка валидации, endDate не может быть в прошлом", groups = {OnCreate.class})
-    private LocalDate endDate;
+    private LocalDateTime start;
 
-    @NotNull(message = "ошибка валидации, itemId не может быть null", groups = {OnCreate.class})
-    @Positive(message = "ошибка валидации, itemId должно быть положительным числом",
-            groups = {OnCreate.class, OnUpdate.class})
-    private Long itemId;
+    private LocalDateTime end;
 
-    @NotNull(message = "ошибка валидации, bookerId не может быть null", groups = {OnCreate.class})
-    @Positive(message = "ошибка валидации, bookerId должно быть положительным числом",
-            groups = {OnCreate.class, OnUpdate.class})
-    private Long bookerId;
+    private UserDto booker;
 
-    @Builder.Default
-    private Status status = Status.WAITING;
+    private Status status;
 }
