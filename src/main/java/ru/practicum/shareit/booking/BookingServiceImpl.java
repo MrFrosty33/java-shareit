@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.InternalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingCreate;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.BadRequestParamException;
 import ru.practicum.shareit.exception.ConflictException;
@@ -145,23 +145,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookingDto save(BookingDtoCreate bookingDtoCreate, Long bookerId) {
+    public BookingDto save(BookingCreate bookingCreate, Long bookerId) {
         userService.validateUserExists(bookerId);
-        itemService.validateItemExists(bookingDtoCreate.getItemId());
+        itemService.validateItemExists(bookingCreate.getItemId());
 
-        bookingDtoCreate.setBookerId(bookerId);
-        bookingDtoCreate.setStatus(Status.WAITING);
+        bookingCreate.setBookerId(bookerId);
+        bookingCreate.setStatus(Status.WAITING);
 
-        if (!itemService.isItemAvailable(bookingDtoCreate.getItemId())) {
-            log.info("Попытка создать Booking с уже зарезервированным Item с id: {}", bookingDtoCreate.getItemId());
-            throw new BadRequestParamException("Item с id: " + bookingDtoCreate.getItemId() + " уже зарезервирован");
+        if (!itemService.isItemAvailable(bookingCreate.getItemId())) {
+            log.info("Попытка создать Booking с уже зарезервированным Item с id: {}", bookingCreate.getItemId());
+            throw new BadRequestParamException("Item с id: " + bookingCreate.getItemId() + " уже зарезервирован");
         }
-        if (bookingDtoCreate.getStart().equals(bookingDtoCreate.getEnd())) {
+        if (bookingCreate.getStart().equals(bookingCreate.getEnd())) {
             log.info("Попытка создать Booking, но start == end");
             throw new BadRequestParamException("Время начала брони и время окончания " +
                     "не может быть в один и тот же момент");
         }
-        Booking booking = bookingMapper.mapEntityFromDtoCreate(bookingDtoCreate);
+        Booking booking = bookingMapper.mapEntityFromDtoCreate(bookingCreate);
         BookingDto result = bookingMapper.toDto(bookingRepository.save(booking));
         log.info("Сохранён Booking с id: {}", result.getId());
         return result;

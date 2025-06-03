@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.booking.dto.BookingCreate;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.markers.OnCreate;
 
 import java.util.List;
@@ -60,11 +60,11 @@ public class BookingController {
     @PostMapping
     public BookingDto save(@Validated(OnCreate.class)
                            @RequestBody
-                               BookingDtoCreate bookingDtoCreate,
+                               BookingCreate bookingCreate,
                            @RequestHeader("X-Sharer-User-Id")
                            @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
                            Long bookerId) {
-        return bookingService.save(bookingDtoCreate, bookerId);
+        return bookingService.save(bookingCreate, bookerId);
     }
 
     @PatchMapping("{bookingId}")

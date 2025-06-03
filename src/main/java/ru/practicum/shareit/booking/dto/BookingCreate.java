@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder(toBuilder = true)
-public class BookingDtoCreate {
+public class BookingCreate {
     private Long id;
 
     @NotNull(message = "ошибка валидации, itemId не может быть null", groups = {OnCreate.class})

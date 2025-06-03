@@ -53,35 +53,35 @@ public class BookingMapper {
         return result;
     }
 
-    public BookingDto mapDtoFromDtoCreate(BookingDtoCreate bookingDtoCreate) {
+    public BookingDto mapDtoFromDtoCreate(BookingCreate bookingCreate) {
         return BookingDto.builder()
-                .item(itemMapper.toDto(itemRepository.findById(bookingDtoCreate.getItemId()).orElseThrow(() -> {
-                    log.info("Попытка найти Item с id: {}", bookingDtoCreate.getItemId());
-                    return new NotFoundException("Item с id: " + bookingDtoCreate.getItemId() + " не найден");
+                .item(itemMapper.toDto(itemRepository.findById(bookingCreate.getItemId()).orElseThrow(() -> {
+                    log.info("Попытка найти Item с id: {}", bookingCreate.getItemId());
+                    return new NotFoundException("Item с id: " + bookingCreate.getItemId() + " не найден");
                 })))
-                .booker(userMapper.toDto(userRepository.findById(bookingDtoCreate.getBookerId()).orElseThrow(() -> {
-                    log.info("Попытка найти User с id: {}", bookingDtoCreate.getBookerId());
-                    return new NotFoundException("Booker с id: " + bookingDtoCreate.getBookerId() + " не найден");
+                .booker(userMapper.toDto(userRepository.findById(bookingCreate.getBookerId()).orElseThrow(() -> {
+                    log.info("Попытка найти User с id: {}", bookingCreate.getBookerId());
+                    return new NotFoundException("Booker с id: " + bookingCreate.getBookerId() + " не найден");
                 })))
-                .start(bookingDtoCreate.getStart())
-                .end(bookingDtoCreate.getEnd())
-                .status(bookingDtoCreate.getStatus())
+                .start(bookingCreate.getStart())
+                .end(bookingCreate.getEnd())
+                .status(bookingCreate.getStatus())
                 .build();
     }
 
-    public Booking mapEntityFromDtoCreate(BookingDtoCreate bookingDtoCreate) {
+    public Booking mapEntityFromDtoCreate(BookingCreate bookingCreate) {
         return Booking.builder()
-                .item(itemRepository.findById(bookingDtoCreate.getItemId()).orElseThrow(() -> {
-                    log.info("Попытка найти Item с id: {}", bookingDtoCreate.getItemId());
-                    return new NotFoundException("Item с id: " + bookingDtoCreate.getItemId() + " не найден");
+                .item(itemRepository.findById(bookingCreate.getItemId()).orElseThrow(() -> {
+                    log.info("Попытка найти Item с id: {}", bookingCreate.getItemId());
+                    return new NotFoundException("Item с id: " + bookingCreate.getItemId() + " не найден");
                 }))
-                .booker(userRepository.findById(bookingDtoCreate.getBookerId()).orElseThrow(() -> {
-                    log.info("Попытка найти User с id: {}", bookingDtoCreate.getBookerId());
-                    return new NotFoundException("Booker с id: " + bookingDtoCreate.getBookerId() + " не найден");
+                .booker(userRepository.findById(bookingCreate.getBookerId()).orElseThrow(() -> {
+                    log.info("Попытка найти User с id: {}", bookingCreate.getBookerId());
+                    return new NotFoundException("Booker с id: " + bookingCreate.getBookerId() + " не найден");
                 }))
-                .startDate(bookingDtoCreate.getStart())
-                .endDate(bookingDtoCreate.getEnd())
-                .status(bookingDtoCreate.getStatus())
+                .startDate(bookingCreate.getStart())
+                .endDate(bookingCreate.getEnd())
+                .status(bookingCreate.getStatus())
                 .build();
     }
 }
