@@ -23,6 +23,4 @@ public interface ItemService {
     void delete(Long itemId, Long userId);
 
     void deleteAll();
-
-    void validateItemExists(Long id);
 }

@@ -15,6 +15,4 @@ public interface BookingService {
     BookingDto save(BookingCreate booking, Long bookerId);
 
     BookingDto approveBooking(Long bookingId, Long ownerId, Boolean approved);
-
-    void validateBookingExists(Long id);
 }

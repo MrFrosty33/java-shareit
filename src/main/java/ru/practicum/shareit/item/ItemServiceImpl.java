@@ -14,7 +14,9 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.validator.Validator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,21 +25,22 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl implements ItemService, Validator<Item> {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final Validator<User> userValidator;
     private final CommentMapper commentMapper;
     private final ItemMapper itemMapper;
 
     @Override
     public ItemDto get(Long itemId, Long userId) {
-        validateItemExists(itemId);
+        validateExists(itemId);
 
         // userId поступает в заголовке, но пока никак не применяется?
         // по ТЗ информацию о предмете может получить любой пользователь
-        userService.validateUserExists(userId);
+        userValidator.validateExists(userId);
 
         ItemDto result = itemMapper.toDto(itemRepository.findById(itemId)
                 .orElseThrow(() -> {
@@ -50,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemsByUserId(Long userId) {
-        userService.validateUserExists(userId);
+        userValidator.validateExists(userId);
 
         List<ItemDto> result = itemRepository.findAll().stream()
                 .filter(item -> item.getOwner().getId().equals(userId))
@@ -87,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public ItemDto save(ItemDto itemDto, Long userId) {
-        userService.validateUserExists(userId);
+        userValidator.validateExists(userId);
         itemDto.setOwnerId(userId);
         ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto)));
         log.info("Сохранён Item с id: {}", result.getId());
@@ -97,15 +100,15 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
-        validateItemExists(itemId);
-        userService.validateUserExists(userId);
+        validateExists(itemId);
+        userValidator.validateExists(userId);
 
-        commentDto.setAuthorName(userService.get(userId).getName());
+        commentDto.setAuthorName(userRepository.findById(userId).get().getName());
         commentDto.setCreated(LocalDateTime.now());
         Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId);
 
 
-        if (booking.getBooker().getId().equals(userId)) {
+        if (booking != null && booking.getBooker().getId().equals(userId)) {
             Comment comment = commentMapper.fromDto(commentDto);
             comment.setItem(booking.getItem());
             comment.setAuthor(booking.getBooker());
@@ -129,8 +132,8 @@ public class ItemServiceImpl implements ItemService {
         // Важно проверять, существует ли уже запись в БД
         // если не существует, то вместо обновления сохранится новая запись, а это не то, что мы хотим,
         // но может быть ошибка, т.к. ID назначается тут вручную и он уже может быть занят
-        validateItemExists(itemId);
-        userService.validateUserExists(userId);
+        validateExists(itemId);
+        userValidator.validateExists(userId);
 
         if (itemDto.getOwnerId() != null && !itemDto.getOwnerId().equals(userId)) {
             log.info("Попытка обновить Item, но ownerId: {} не сходится с userId: {}", itemDto.getOwnerId(), userId);
@@ -157,7 +160,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public void delete(Long itemId, Long userId) {
-        userService.validateUserExists(userId);
+        userValidator.validateExists(userId);
 
         Optional<Item> findItemResult = itemRepository.findById(itemId);
 
@@ -190,7 +193,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void validateItemExists(Long id) {
+    public void validateExists(Long id) {
         if (itemRepository.findById(id).isEmpty()) {
             log.info("Попытка найти Item с id: {}", id);
             throw new NotFoundException("Item с id: " + id + " не найден");

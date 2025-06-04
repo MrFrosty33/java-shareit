@@ -8,19 +8,20 @@ import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.validator.Validator;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, Validator<User> {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public UserDto get(Long id) {
-        validateUserExists(id);
+        validateExists(id);
         UserDto result = userMapper.toDto(userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.info("Попытка найти User с id: {}", id);
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) {
-        validateUserExists(id);
+        validateExists(id);
         if (userRepository.getEmails(id).contains(userDto.getEmail())) {
             log.info("Попытка обновить email у пользователя с id: {} на уже занятый email: {}", id, userDto.getEmail());
             throw new ConflictException("Email: " + userDto.getEmail() + " уже занят другим пользователем");
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void delete(Long id) {
-        validateUserExists(id);
+        validateExists(id);
         userRepository.delete(userRepository.findById(id).get());
         log.info("Удалён User с id: {}", id);
     }
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
     // при подключении БД в будущем наверно стоит вынести в отдельный класс валидатор?
     @Override
-    public void validateUserExists(Long id) {
+    public void validateExists(Long id) {
         if (userRepository.findById(id).isEmpty()) {
             log.info("Попытка найти несуществующего User с id: {}", id);
             throw new NotFoundException("User с id: " + id + " не найден");

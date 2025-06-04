@@ -11,9 +11,10 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exception.BadRequestParamException;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.validator.Validator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +22,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingServiceImpl implements BookingService {
+public class BookingServiceImpl implements BookingService, Validator<Booking> {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
-    private final UserService userService;
-    private final ItemService itemService;
+    private final Validator<User> userValidator;
+    private final Validator<Item> itemValidator;
     private final BookingMapper bookingMapper;
 
     @Override
@@ -54,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getAllByStateAndBookerId(State state, Long bookerId) {
-        userService.validateUserExists(bookerId);
+        userValidator.validateExists(bookerId);
 
         List<BookingDto> result;
         LocalDateTime dateNow = LocalDateTime.now();
@@ -97,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getAllByStateAndOwnerId(State state, Long ownerId) {
-        userService.validateUserExists(ownerId);
+        userValidator.validateExists(ownerId);
 
         if (itemRepository.findByOwnerId(ownerId).isEmpty()) {
             // или же выбрасывать какое исключение?
@@ -146,13 +147,13 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     @Override
     public BookingDto save(BookingCreate bookingCreate, Long bookerId) {
-        userService.validateUserExists(bookerId);
-        itemService.validateItemExists(bookingCreate.getItemId());
+        userValidator.validateExists(bookerId);
+        itemValidator.validateExists(bookingCreate.getItemId());
 
         bookingCreate.setBookerId(bookerId);
         bookingCreate.setStatus(Status.WAITING);
 
-        if (!itemService.isItemAvailable(bookingCreate.getItemId())) {
+        if (!itemRepository.isItemAvailable(bookingCreate.getItemId())) {
             log.info("Попытка создать Booking с уже зарезервированным Item с id: {}", bookingCreate.getItemId());
             throw new BadRequestParamException("Item с id: " + bookingCreate.getItemId() + " уже зарезервирован");
         }
@@ -173,7 +174,7 @@ public class BookingServiceImpl implements BookingService {
         //userService.validateUserExists(ownerId);
         // в тестах передаётся id несуществующего пользователя, но не ожидается 404 код ответа...
 
-        validateBookingExists(bookingId);
+        validateExists(bookingId);
 
         Booking booking = bookingRepository.findById(bookingId).get();
         Long itemOwnerId = booking.getItem().getOwner().getId();
@@ -197,7 +198,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void validateBookingExists(Long id) {
+    public void validateExists(Long id) {
         if (bookingRepository.findById(id).isEmpty()) {
             log.info("Попытка найти Booking с id: {}", id);
             throw new NotFoundException("Booking с id: " + id + " не найден");
