@@ -90,36 +90,39 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             SELECT b.status FROM Booking b
             WHERE b.booker.id = :bookerId AND b.item.id = :itemId
-            AND b.endDate < CURRENT_TIMESTAMP
+            AND b.endDate < :date
             ORDER BY b.endDate DESC
             """)
-    Status getLastBookingStatusByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
+    List<Status> getLastBookingStatusByBookerIdAndItemId(@Param("bookerId") Long bookerId,
+                                                         @Param("itemId") Long itemId,
+                                                         @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.booker.id = :bookerId
             AND b.item.id = :itemId
-            AND b.endDate < CURRENT_TIMESTAMP
+            AND b.endDate < :date
             ORDER BY b.endDate DESC
-            LIMIT 1
             """)
-    Booking getLastBookingByBookerIdAndItemId(@Param("bookerId") Long bookerId, @Param("itemId") Long itemId);
+    List<Booking> getLastBookingByBookerIdAndItemId(@Param("bookerId") Long bookerId,
+                                                    @Param("itemId") Long itemId,
+                                                    @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.item.id = :itemId
-            AND b.startDate > CURRENT_TIMESTAMP
+            AND b.startDate > :date
             ORDER BY b.startDate ASC
-            LIMIT 1
             """)
-    Booking findNextBooking(@Param("itemId") Long itemId);
+    List<Booking> findNextBooking(@Param("itemId") Long itemId,
+                                  @Param("date") LocalDateTime date);
 
     @Query("""
             SELECT b FROM Booking b
             WHERE b.item.id = :itemId
-            AND b.endDate < CURRENT_TIMESTAMP
+            AND b.endDate < :date
             ORDER BY b.endDate DESC
-            LIMIT 1
             """)
-    Booking findPreviousBooking(@Param("itemId") Long itemId);
+    List<Booking> findPreviousBooking(@Param("itemId") Long itemId,
+                                      @Param("date") LocalDateTime date);
 }

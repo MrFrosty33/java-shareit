@@ -104,8 +104,9 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         userValidator.validateExists(userId);
 
         commentDto.setAuthorName(userRepository.findById(userId).get().getName());
-        commentDto.setCreated(LocalDateTime.now());
-        Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId);
+        LocalDateTime now = LocalDateTime.now();
+        commentDto.setCreated(now);
+        Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
 
 
         if (booking != null && booking.getBooker().getId().equals(userId)) {
