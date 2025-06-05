@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.utilities.DataEnricher;
 import ru.practicum.shareit.utilities.Validator;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemServiceImpl implements ItemService, Validator<Item>, ItemDataFiller {
+public class ItemServiceImpl implements ItemService, Validator<Item>, DataEnricher<ItemDto, Item> {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;

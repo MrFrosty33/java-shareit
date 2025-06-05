@@ -12,11 +12,12 @@ import ru.practicum.shareit.exception.BadRequestParamException;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemDataFiller;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDataFiller;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.utilities.DataEnricher;
 import ru.practicum.shareit.utilities.Validator;
 
 import java.time.LocalDateTime;
@@ -25,12 +26,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingServiceImpl implements BookingService, Validator<Booking>, BookingDataFiller {
+public class BookingServiceImpl implements BookingService, Validator<Booking>, DataEnricher<BookingDto, Booking> {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final ItemDataFiller itemDataFiller;
-    private final UserDataFiller userDataFiller;
+    private final DataEnricher<ItemDto, Item> itemDataEnricher;
+    private final DataEnricher<UserDto, User> userDataEnricher;
     private final Validator<User> userValidator;
     private final Validator<Item> itemValidator;
     private final BookingMapper bookingMapper;
@@ -215,18 +216,18 @@ public class BookingServiceImpl implements BookingService, Validator<Booking>, B
     @Override
     public BookingDto getDto(Booking entity) {
         BookingDto result = bookingMapper.toDto(entity);
-        result.setItem(itemDataFiller.getDto(entity.getItem()));
-        result.setBooker(userDataFiller.getDto(entity.getBooker()));
+        result.setItem(itemDataEnricher.getDto(entity.getItem()));
+        result.setBooker(userDataEnricher.getDto(entity.getBooker()));
         return result;
     }
 
     private BookingDto getDtoFromCreate(BookingCreate create) {
         BookingDto result = bookingMapper.toDtoFromCreate(create);
-        result.setItem(itemDataFiller.getDto(itemRepository.findById(create.getItemId()).orElseThrow(() -> {
+        result.setItem(itemDataEnricher.getDto(itemRepository.findById(create.getItemId()).orElseThrow(() -> {
             log.info("Попытка найти Item с id: {}", create.getItemId());
             return new NotFoundException("Item с id: " + create.getItemId() + " не найден");
         })));
-        result.setBooker(userDataFiller.getDto(userRepository.findById(create.getBookerId()).orElseThrow(() -> {
+        result.setBooker(userDataEnricher.getDto(userRepository.findById(create.getBookerId()).orElseThrow(() -> {
             log.info("Попытка найти User с id: {}", create.getBookerId());
             return new NotFoundException("Booker с id: " + create.getBookerId() + " не найден");
         })));
