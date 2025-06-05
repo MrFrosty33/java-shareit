@@ -105,18 +105,16 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         validateExists(itemId);
         userValidator.validateExists(userId);
 
-        commentDto.setAuthorName(userRepository.findById(userId).get().getName());
         LocalDateTime now = LocalDateTime.now();
-        commentDto.setCreated(now);
         Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
 
-
         if (booking != null && booking.getBooker().getId().equals(userId)) {
-            Comment comment = commentMapper.fromDto(commentDto);
+            Comment comment = getCommentEntity(commentDto);
             comment.setItem(booking.getItem());
             comment.setAuthor(booking.getBooker());
+            comment.setCreated(now);
 
-            CommentDto result = commentMapper.toDto(commentRepository.save(comment));
+            CommentDto result = getCommentDto(commentRepository.save(comment));
             log.info("Был добавлен Comment с id: {}", result.getId());
             return result;
         } else if (booking.getStatus().equals(Status.APPROVED)) {
@@ -208,10 +206,14 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         // пока требуется просто, чтобы эти поля были и имели значения null
 
         result.setComments(commentRepository.findAllByItemId(result.getId()).stream()
-                .map(commentMapper::toDto)
+                .map(this::getCommentDto)
                 .toList());
 
         return result;
+    }
+
+    private CommentDto getCommentDto(Comment entity) {
+        return commentMapper.toDto(entity);
     }
 
     private Item getEntity(ItemDto dto) {
@@ -231,5 +233,9 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         }
 
         return result;
+    }
+
+    private Comment getCommentEntity(CommentDto dto) {
+        return commentMapper.toEntity(dto);
     }
 }
