@@ -25,6 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping("/items")
+@Validated
 public class ItemController {
     private final ItemService itemService;
 

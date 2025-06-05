@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
     private final BookingService bookingService;
 
