@@ -29,17 +29,12 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Уберу пока все проверки @NotNull, @Positive. Все это отсеивается ещё в DTO объекте
-    // и в случае какого-то неподходящего значения, его дальше не даст вставить сама БД по ограничения полей таблицы
-
     @Column
     private String name;
 
     @Column
     private String description;
 
-    // стоит ли их подтягивать сразу, или всё же, как понадобятся?
-    // в целом, везде пока только в едином числе другие сущности, нагружать БД сильно не должно
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;

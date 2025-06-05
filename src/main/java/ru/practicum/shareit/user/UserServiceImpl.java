@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService, Validator<User> {
     @Override
     public UserDto get(Long id) {
         validateExists(id);
-        UserDto result = userMapper.toDto(userRepository.findById(id)
+        UserDto result = getDto(userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.info("Попытка найти User с id: {}", id);
                     return new NotFoundException("User с id: " + id + " не найден");
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService, Validator<User> {
 
     @Override
     public List<UserDto> getAll() {
-        List<UserDto> result = userRepository.findAll().stream().map(userMapper::toDto).toList();
+        List<UserDto> result = userRepository.findAll().stream().map(this::getDto).toList();
         log.info("Получен список всех User");
         return result;
     }
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService, Validator<User> {
     @Transactional
     @Override
     public UserDto save(UserDto userDto) {
-        UserDto result = userMapper.toDto(userRepository.save(userMapper.fromDto(userDto)));
+        UserDto result = getDto(userRepository.save(getEntity(userDto)));
         log.info("Сохранён User с id: {}", result.getId());
         return result;
     }
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService, Validator<User> {
         if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
         log.info("Обновлён User с id: {}", id);
         // т.к. @Transactional, вызов метода репозитория save не требуется
-        return userMapper.toDto(user);
+        return getDto(user);
     }
 
     @Transactional
@@ -89,5 +89,14 @@ public class UserServiceImpl implements UserService, Validator<User> {
             log.info("Попытка найти несуществующего User с id: {}", id);
             throw new NotFoundException("User с id: " + id + " не найден");
         }
+    }
+
+    // Чтобы в будущем просто сюда добавлять необходимые поля, и не переписывать каждый метод
+    private UserDto getDto(User user) {
+        return userMapper.toDto(user);
+    }
+
+    private User getEntity(UserDto dto) {
+        return userMapper.toEntity(dto);
     }
 }

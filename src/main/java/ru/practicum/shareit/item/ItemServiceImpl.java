@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.validator.Validator;
@@ -29,6 +30,7 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
     private final UserRepository userRepository;
     private final Validator<User> userValidator;
     private final CommentMapper commentMapper;
@@ -42,7 +44,7 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         // по ТЗ информацию о предмете может получить любой пользователь
         userValidator.validateExists(userId);
 
-        ItemDto result = itemMapper.toDto(itemRepository.findById(itemId)
+        ItemDto result = getDto(itemRepository.findById(itemId)
                 .orElseThrow(() -> {
                     log.info("Попытка найти Item с id: {}", itemId);
                     return new NotFoundException("Item с id: " + itemId + " не найден");
@@ -57,7 +59,7 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
 
         List<ItemDto> result = itemRepository.findAll().stream()
                 .filter(item -> item.getOwner().getId().equals(userId))
-                .map(itemMapper::toDto)
+                .map(this::getDto)
                 .toList();
         log.info("Получен список всех Item у пользователя с id: {}", userId);
         return result;
@@ -92,7 +94,7 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
     public ItemDto save(ItemDto itemDto, Long userId) {
         userValidator.validateExists(userId);
         itemDto.setOwnerId(userId);
-        ItemDto result = itemMapper.toDto(itemRepository.save(itemMapper.fromDto(itemDto)));
+        ItemDto result = getDto(itemRepository.save(getEntity(itemDto)));
         log.info("Сохранён Item с id: {}", result.getId());
         return result;
     }
@@ -142,7 +144,6 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
                     " отличается от Вашего userId: " + userId);
         }
 
-        // можно ли обновлять владельца и запросы?
         Item item = itemRepository.findById(itemId).get();
         if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
             item.setName(itemDto.getName());
@@ -155,7 +156,7 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         }
 
         log.info("Обновлён Item с id: {}", itemId);
-        return itemMapper.toDto(item);
+        return getDto(item);
     }
 
     @Transactional
@@ -199,5 +200,36 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
             log.info("Попытка найти Item с id: {}", id);
             throw new NotFoundException("Item с id: " + id + " не найден");
         }
+    }
+
+    private ItemDto getDto(Item entity) {
+        ItemDto result = itemMapper.toDto(entity);
+        //todo в будущем, вероятно, придётся lastBooking, nextBooking подтягивать.
+        // пока требуется просто, чтобы эти поля были и имели значения null
+
+        result.setComments(commentRepository.findAllByItemId(result.getId()).stream()
+                .map(commentMapper::toDto)
+                .toList());
+
+        return result;
+    }
+
+    private Item getEntity(ItemDto dto) {
+        Item result = itemMapper.toEntity(dto);
+
+        if (dto.getOwnerId() != null) {
+            result.setOwner(userRepository.findById(dto.getOwnerId()).orElseThrow(() -> {
+                log.info("Попытка найти User с id: {}", dto.getOwnerId());
+                return new NotFoundException("Owner с id: " + dto.getOwnerId() + " не найден");
+            }));
+        }
+        if (dto.getRequestId() != null) {
+            result.setRequest(requestRepository.findById(dto.getRequestId()).orElseThrow(() -> {
+                log.info("Попытка найти ItemRequest с id: {}", dto.getRequestId());
+                return new NotFoundException("Request с id: " + dto.getRequestId() + " не найден");
+            }));
+        }
+
+        return result;
     }
 }

@@ -171,9 +171,10 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
     @Transactional
     @Override
     public BookingDto approveBooking(Long bookingId, Long ownerId, Boolean approved) {
-        //userService.validateUserExists(ownerId);
-        // в тестах передаётся id несуществующего пользователя, но не ожидается 404 код ответа...
-
+        //userValidator.validateExists(ownerId);
+        // в целом-то, можно и не проверять
+        // если ownerId не сойдётся с владельцем вещи, то и неважно, существует он или нет
+        // и пусть тогда будет BadRequestParamException
         validateExists(bookingId);
 
         Booking booking = bookingRepository.findById(bookingId).get();
