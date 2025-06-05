@@ -17,7 +17,7 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.validator.Validator;
+import ru.practicum.shareit.utilities.Validator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemServiceImpl implements ItemService, Validator<Item> {
+public class ItemServiceImpl implements ItemService, Validator<Item>, ItemDataFiller {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -200,7 +200,8 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         }
     }
 
-    private ItemDto getDto(Item entity) {
+    @Override
+    public ItemDto getDto(Item entity) {
         ItemDto result = itemMapper.toDto(entity);
         //todo в будущем, вероятно, придётся lastBooking, nextBooking подтягивать.
         // пока требуется просто, чтобы эти поля были и имели значения null
@@ -216,7 +217,8 @@ public class ItemServiceImpl implements ItemService, Validator<Item> {
         return commentMapper.toDto(entity);
     }
 
-    private Item getEntity(ItemDto dto) {
+    @Override
+    public Item getEntity(ItemDto dto) {
         Item result = itemMapper.toEntity(dto);
 
         if (dto.getOwnerId() != null) {

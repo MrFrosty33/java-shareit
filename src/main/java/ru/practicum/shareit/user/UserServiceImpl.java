@@ -8,14 +8,14 @@ import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.validator.Validator;
+import ru.practicum.shareit.utilities.Validator;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService, Validator<User> {
+public class UserServiceImpl implements UserService, Validator<User>, UserDataFiller {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -92,11 +92,13 @@ public class UserServiceImpl implements UserService, Validator<User> {
     }
 
     // Чтобы в будущем просто сюда добавлять необходимые поля, и не переписывать каждый метод
-    private UserDto getDto(User user) {
+    @Override
+    public UserDto getDto(User user) {
         return userMapper.toDto(user);
     }
 
-    private User getEntity(UserDto dto) {
+    @Override
+    public User getEntity(UserDto dto) {
         return userMapper.toEntity(dto);
     }
 }

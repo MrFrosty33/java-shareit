@@ -12,9 +12,12 @@ import ru.practicum.shareit.exception.BadRequestParamException;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemDataFiller;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.validator.Validator;
+import ru.practicum.shareit.user.UserDataFiller;
+import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.utilities.Validator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,9 +25,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingServiceImpl implements BookingService, Validator<Booking> {
+public class BookingServiceImpl implements BookingService, Validator<Booking>, BookingDataFiller {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ItemDataFiller itemDataFiller;
+    private final UserDataFiller userDataFiller;
     private final Validator<User> userValidator;
     private final Validator<Item> itemValidator;
     private final BookingMapper bookingMapper;
@@ -48,7 +54,7 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
                     " отличается от Вашего userId: " + bookerOrItemOwnerId);
         }
 
-        BookingDto result = bookingMapper.toDto(booking);
+        BookingDto result = getDto(booking);
         log.info("Получен Booking с id: {}", id);
         return result;
     }
@@ -63,27 +69,27 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
         switch (state) {
             case ALL -> {
                 result = bookingRepository.findAllByBookerId(bookerId).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case PAST -> {
                 result = bookingRepository.findPastByBookerId(bookerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case FUTURE -> {
                 result = bookingRepository.findFutureByBookerId(bookerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case CURRENT -> {
                 result = bookingRepository.findCurrentByBookerId(bookerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case WAITING, REJECTED -> {
                 result = bookingRepository.findWaitingOrRejectedByBookerId(State.stringValue(state), bookerId).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             default -> {
@@ -111,27 +117,27 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
         switch (state) {
             case ALL -> {
                 result = bookingRepository.findAllByOwnerId(ownerId).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case PAST -> {
                 result = bookingRepository.findPastByOwnerId(ownerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case FUTURE -> {
                 result = bookingRepository.findFutureByOwnerId(ownerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case CURRENT -> {
                 result = bookingRepository.findCurrentByOwnerId(ownerId, dateNow).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             case WAITING, REJECTED -> {
                 result = bookingRepository.findWaitingOrRejectedByOwnerId(State.stringValue(state), ownerId).stream()
-                        .map(bookingMapper::toDto)
+                        .map(this::getDto)
                         .toList();
             }
             default -> {
@@ -162,8 +168,8 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
             throw new BadRequestParamException("Время начала брони и время окончания " +
                     "не может быть в один и тот же момент");
         }
-        Booking booking = bookingMapper.mapEntityFromDtoCreate(bookingCreate);
-        BookingDto result = bookingMapper.toDto(bookingRepository.save(booking));
+        Booking booking = getEntityFromCreate(bookingCreate);
+        BookingDto result = getDto(bookingRepository.save(booking));
         log.info("Сохранён Booking с id: {}", result.getId());
         return result;
     }
@@ -204,5 +210,53 @@ public class BookingServiceImpl implements BookingService, Validator<Booking> {
             log.info("Попытка найти Booking с id: {}", id);
             throw new NotFoundException("Booking с id: " + id + " не найден");
         }
+    }
+
+    @Override
+    public BookingDto getDto(Booking entity) {
+        BookingDto result = bookingMapper.toDto(entity);
+        result.setItem(itemDataFiller.getDto(entity.getItem()));
+        result.setBooker(userDataFiller.getDto(entity.getBooker()));
+        return result;
+    }
+
+    private BookingDto getDtoFromCreate(BookingCreate create) {
+        BookingDto result = bookingMapper.toDtoFromCreate(create);
+        result.setItem(itemDataFiller.getDto(itemRepository.findById(create.getItemId()).orElseThrow(() -> {
+            log.info("Попытка найти Item с id: {}", create.getItemId());
+            return new NotFoundException("Item с id: " + create.getItemId() + " не найден");
+        })));
+        result.setBooker(userDataFiller.getDto(userRepository.findById(create.getBookerId()).orElseThrow(() -> {
+            log.info("Попытка найти User с id: {}", create.getBookerId());
+            return new NotFoundException("Booker с id: " + create.getBookerId() + " не найден");
+        })));
+        return result;
+    }
+
+    @Override
+    public Booking getEntity(BookingDto dto) {
+        Booking result = bookingMapper.toEntity(dto);
+        result.setItem(itemRepository.findById(dto.getItem().getId()).orElseThrow(() -> {
+            log.info("Попытка найти Item с id: {}", dto.getItem().getId());
+            return new NotFoundException("Item с id: " + dto.getItem().getId() + " не найден");
+        }));
+        result.setBooker(userRepository.findById(dto.getBooker().getId()).orElseThrow(() -> {
+            log.info("Попытка найти User с id: {}", dto.getBooker().getId());
+            return new NotFoundException("Booker с id: " + dto.getBooker().getId() + " не найден");
+        }));
+        return result;
+    }
+
+    private Booking getEntityFromCreate(BookingCreate create) {
+        Booking result = bookingMapper.toEntityFromCreate(create);
+        result.setItem(itemRepository.findById(create.getItemId()).orElseThrow(() -> {
+            log.info("Попытка найти Item с id: {}", create.getItemId());
+            return new NotFoundException("Item с id: " + create.getItemId() + " не найден");
+        }));
+        result.setBooker(userRepository.findById(create.getBookerId()).orElseThrow(() -> {
+            log.info("Попытка найти User с id: {}", create.getBookerId());
+            return new NotFoundException("Booker с id: " + create.getBookerId() + " не найден");
+        }));
+        return result;
     }
 }
