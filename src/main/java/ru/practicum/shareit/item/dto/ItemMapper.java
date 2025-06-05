@@ -1,40 +1,21 @@
 package ru.practicum.shareit.item.dto;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.practicum.shareit.item.Item;
 
-@Component
-public class ItemMapper {
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
+    @Mapping(target = "ownerId",
+            expression = "java(item.getOwner() != null ? item.getOwner().getId() : null)")
+    @Mapping(target = "requestId",
+            expression = "java(item.getRequest() != null ? item.getRequest().getId() : null)")
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "lastBooking", ignore = true)
+    @Mapping(target = "nextBooking", ignore = true)
+    ItemDto toDto(Item item);
 
-    public ItemDto toDto(Item item) {
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .ownerId(item.getOwnerId() != null ? item.getOwnerId() : null)
-                .requestId(item.getRequestId() != null ? item.getRequestId() : null)
-                .available(item.getAvailable())
-                .build();
-    }
-
-    public Item fromDto(ItemDto itemDto) {
-        return Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
-                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .available(itemDto.getAvailable())
-                .build();
-    }
-
-    public Item fromDto(ItemDto itemDto, Long id) {
-        return Item.builder()
-                .id(id)
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .ownerId(itemDto.getOwnerId() != null ? itemDto.getOwnerId() : null)
-                .requestId(itemDto.getRequestId() != null ? itemDto.getRequestId() : null)
-                .available(itemDto.getAvailable())
-                .build();
-    }
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "request", ignore = true)
+    Item toEntity(ItemDto itemDto);
 }

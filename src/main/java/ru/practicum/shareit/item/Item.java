@@ -1,38 +1,49 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
+@Entity
+@Table(name = "items")
 public class Item {
-    @NotNull(message = "ошибка валидации, id не может быть null")
-    @Positive(message = "ошибка валидации, id должно быть положительным числом")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "ошибка валидации, name не может быть null")
-    @NotBlank(message = "ошибка валидации, name не может быть Blank")
+
+    @Column
     private String name;
 
-    @NotNull(message = "ошибка валидации, description не может быть null")
-    @NotBlank(message = "ошибка валидации, description не может быть Blank")
+    @Column
     private String description;
 
-    @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
-    private Long ownerId;
-    @Positive(message = "ошибка валидации, requestId должно быть положительным числом")
-    private Long requestId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
-    @NotNull(message = "ошибка валидации, available не может быть null")
+    // Только ли один запрос может быть у предмета?
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
+
+    @Column(name = "availability")
     private Boolean available;
-
-    @Getter
-    private Long rentalCount = 0L;
-
-    public void increaseRentalCount() {
-        rentalCount++;
-    }
 }

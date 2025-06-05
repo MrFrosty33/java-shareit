@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:17.5
+    container_name: share-it
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=share-it
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=nimda
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10

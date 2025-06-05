@@ -3,80 +3,103 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.utilities.DataEnricher;
+import ru.practicum.shareit.utilities.Validator;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+public class UserServiceImpl implements UserService, Validator<User>, DataEnricher<UserDto, User> {
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public UserDto get(Long id) {
-        validateUserExists(id);
-        UserDto result = userMapper.toDto(userStorage.get(id));
+        validateExists(id);
+        UserDto result = getDto(userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.info("Попытка найти User с id: {}", id);
+                    return new NotFoundException("User с id: " + id + " не найден");
+                }));
         log.info("Получен User с id: {}", id);
         return result;
     }
 
     @Override
     public List<UserDto> getAll() {
-        List<UserDto> result = userStorage.getAll().stream().map(userMapper::toDto).toList();
+        List<UserDto> result = userRepository.findAll().stream().map(this::getDto).toList();
         log.info("Получен список всех User");
         return result;
     }
 
+    @Transactional
     @Override
     public UserDto save(UserDto userDto) {
-        validateUniqueEmail(userDto.getEmail());
-        UserDto result = userMapper.toDto(userStorage.save(userMapper.fromDto(userDto)));
+        UserDto result = getDto(userRepository.save(getEntity(userDto)));
         log.info("Сохранён User с id: {}", result.getId());
         return result;
     }
 
+    @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) {
-        validateUserExists(id);
-        validateUniqueEmail(userDto.getEmail());
-        UserDto result = userMapper.toDto(userStorage.update(userDto, id));
+        validateExists(id);
+        if (userRepository.getEmails(id).contains(userDto.getEmail())) {
+            log.info("Попытка обновить email у пользователя с id: {} на уже занятый email: {}", id, userDto.getEmail());
+            throw new ConflictException("Email: " + userDto.getEmail() + " уже занят другим пользователем");
+        }
+
+        User user = userRepository.findById(id).get();
+        if (userDto.getName() != null && !userDto.getName().isBlank()) user.setName(userDto.getName());
+        if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
         log.info("Обновлён User с id: {}", id);
-        return result;
+        // т.к. @Transactional, вызов метода репозитория save не требуется
+        return getDto(user);
     }
 
+    @Transactional
     @Override
-    public boolean delete(Long id) {
-        validateUserExists(id);
-        boolean result = userStorage.delete(id);
+    public void delete(Long id) {
+        validateExists(id);
+        userRepository.delete(userRepository.findById(id).get());
         log.info("Удалён User с id: {}", id);
-        return result;
     }
 
+    @Transactional
     @Override
-    public boolean deleteAll() {
-        boolean result = userStorage.deleteAll();
-        log.info("Очищено хранилище User");
-        return result;
+    public void deleteAll() {
+        if (userRepository.findAll().isEmpty()) {
+            log.info("Попытка очистить таблицу User, но она уже пуста");
+        } else {
+            userRepository.deleteAll();
+            log.info("Очищено хранилище User");
+        }
     }
 
     // при подключении БД в будущем наверно стоит вынести в отдельный класс валидатор?
     @Override
-    public void validateUserExists(Long id) {
-        if (!userStorage.getIds().contains(id)) {
+    public void validateExists(Long id) {
+        if (userRepository.findById(id).isEmpty()) {
             log.info("Попытка найти несуществующего User с id: {}", id);
             throw new NotFoundException("User с id: " + id + " не найден");
         }
     }
 
-    private void validateUniqueEmail(String email) {
-        if (userStorage.getAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
-            log.info("Попытка добавить нового пользователя с уже привязанным email: {}", email);
-            throw new ConflictException("Email: " + email + " уже привязан");
-        }
+    // Чтобы в будущем просто сюда добавлять необходимые поля, и не переписывать каждый метод
+    @Override
+    public UserDto getDto(User user) {
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public User getEntity(UserDto dto) {
+        return userMapper.toEntity(dto);
     }
 }
