@@ -4,37 +4,105 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestAnswer;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utilities.ExistenceValidator;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ItemRequestServiceImpl implements ItemRequestService, ExistenceValidator<ItemRequest> {
     private final ItemRequestRepository requestRepository;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
+    private final ExistenceValidator<User> userValidator;
+    private final ItemRequestMapper mapper;
 
     @Override
     public ItemRequestDto get(Long userId) {
+        userValidator.validateExists(userId);
         return null;
     }
 
     @Override
     public ItemRequestDto getById(Long userId, Long requestId) {
+        userValidator.validateExists(userId);
+        validateExists(requestId);
         return null;
     }
 
     @Override
     public List<ItemRequestDto> getAllByUserId(Long userId) {
+        userValidator.validateExists(userId);
+        // отсортировать ASC
         return List.of();
     }
 
     @Override
     @Transactional
-    public ItemRequestDto save(ItemRequestDto itemRequest) {
-        return null;
+    public CreateItemRequestDto save(Long requesterId, CreateItemRequestDto itemRequest) {
+        // может несколько запутано, но идея в том,
+        // чтобы при создании нового запроса не возвращать список подходящих предметов,
+        // а вернуть только более простой DTO, с id, описанием и id его создателя.
+        userValidator.validateExists(requesterId);
+        ItemRequestDto dto = mapper.mapDtoFromCreateRequest(itemRequest);
+        dto.setRequesterId(requesterId);
+        dto.setCreated(LocalDateTime.now());
+
+        CreateItemRequestDto result = mapper.mapCreateRequestFromEntity(requestRepository.save(getEntity(dto)));
+        log.info("Сохранён ItemRequest с id: {}", result.getId());
+        return result;
+    }
+
+    private Set<ItemRequestAnswer> findAnswers(String itemDescription) {
+        List<Item> queryResult = itemRepository.findByDescription(itemDescription);
+        log.info("Был найден список предметов по описанию: {}, преобразован в Set<ItemRequestAnswer> и передан далее",
+                itemDescription);
+        return queryResult.stream().map(mapper::mapAnswerFromItemEntity).collect(Collectors.toSet());
+
+//         если надо возвращать только доступные
+//        return queryResult.stream()
+//                .filter(Item::getAvailable)
+//                .map(mapper::mapAnswerFromItemEntity)
+//                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ItemRequestDto getDtoWithAnswers(ItemRequest entity) {
+        ItemRequestDto result = mapper.toDto(entity);
+        result.setItems(findAnswers(result.getDescription()));
+        return result;
+    }
+
+    @Override
+    public ItemRequest getEntity(ItemRequestDto dto) {
+        ItemRequest result = mapper.toEntity(dto);
+
+        if (dto.getRequesterId() != null) {
+            result.setRequester(userRepository.findById(dto.getRequesterId()).orElseThrow(() -> {
+                log.info("Попытка найти User с id: {}", dto.getRequesterId());
+                return new NotFoundException("Owner с id: " + dto.getRequesterId() + " не найден");
+            }));
+        } else {
+            log.info("Во время выполнения метода ItemRequestServiceImpl.getEntity(ItemRequestDto) " +
+                    "произошла ошибка. requesterId == null");
+            throw new InternalServerException
+                    ("Ошибка: переданный DTO объект не содержит requesterId");
+        }
+        return result;
     }
 
     @Override
