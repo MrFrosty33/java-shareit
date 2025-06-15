@@ -26,28 +26,28 @@ public class ItemRequestController {
     private final ItemRequestService requestService;
 
     @GetMapping
-    public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id")
+    public List<ItemRequestDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id")
                               @NotNull(message = "ошибка валидации, userId не может быть null")
                               @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                               Long userId) {
-        return requestService.get(userId);
+        return requestService.getAllByUserId(userId);
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto getById(@RequestHeader("X-Sharer-User-Id")
+    public ItemRequestDto getByRequestId(@RequestHeader("X-Sharer-User-Id")
                                   @NotNull(message = "ошибка валидации, userId не может быть null")
                                   @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                                   Long userId,
-                                  @PathVariable(name = "requestId") Long requestId) {
-        return requestService.getById(userId, requestId);
+                                         @PathVariable(name = "requestId") Long requestId) {
+        return requestService.getByRequestId(userId, requestId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id")
+    public List<ItemRequestDto> getOthersRequests(@RequestHeader("X-Sharer-User-Id")
                                                @NotNull(message = "ошибка валидации, userId не может быть null")
                                                @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                                                Long userId) {
-        return requestService.getAllByUserId(userId);
+        return requestService.getOthersRequests(userId);
     }
 
     @PostMapping

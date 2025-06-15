@@ -32,7 +32,7 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
     private final ItemRequestMapper mapper;
 
     @Override
-    public List<ItemRequestDto> get(Long userId) {
+    public List<ItemRequestDto> getOthersRequests(Long userId) {
         userValidator.validateExists(userId);
         List<ItemRequestDto> result = requestRepository.findByRequesterIdNotOrderByCreatedAsc(userId).stream()
                 .map(this::getDtoWithAnswers)
@@ -43,7 +43,7 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
     }
 
     @Override
-    public ItemRequestDto getById(Long userId, Long requestId) {
+    public ItemRequestDto getByRequestId(Long userId, Long requestId) {
         userValidator.validateExists(userId);
         validateExists(requestId);
         ItemRequestDto result = getDtoWithAnswers(requestRepository.findById(requestId).get());
