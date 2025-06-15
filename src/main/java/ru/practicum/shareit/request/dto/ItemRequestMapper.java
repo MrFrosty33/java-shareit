@@ -15,8 +15,6 @@ public interface ItemRequestMapper {
     @Mapping(target = "requester", ignore = true)
     public ItemRequest toEntity(ItemRequestDto itemRequestDto);
 
-    @Mapping(target = "itemId", source = "id")
-    @Mapping(target = "itemName", source = "name")
     @Mapping(target = "ownerId", source = "item.owner.id")
     public ItemRequestAnswer mapAnswerFromItemEntity(Item item);
 

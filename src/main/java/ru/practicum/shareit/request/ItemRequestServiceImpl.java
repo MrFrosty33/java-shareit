@@ -78,24 +78,17 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
         return result;
     }
 
-    private Set<ItemRequestAnswer> findAnswers(String itemDescription) {
-        List<Item> queryResult = itemRepository.findByDescriptionContaining(itemDescription);
-        log.info("Был найден список предметов по описанию: {}, преобразован в Set<ItemRequestAnswer> и передан далее",
-                itemDescription);
+    private Set<ItemRequestAnswer> findAnswers(Long requestId) {
+        List<Item> queryResult = itemRepository.findByRequestId(requestId);
+        log.info("Был найден список предметов по requestId: {}, преобразован в Set<ItemRequestAnswer> и передан далее",
+                requestId);
         return queryResult.stream().map(mapper::mapAnswerFromItemEntity).collect(Collectors.toSet());
-
-//         если надо возвращать только доступные
-//         (а лучше вообще через другой запрос к БД, чтобы не грузить лишнее)
-//        return queryResult.stream()
-//                .filter(Item::getAvailable)
-//                .map(mapper::mapAnswerFromItemEntity)
-//                .collect(Collectors.toSet());
     }
 
     @Override
     public ItemRequestDto getDtoWithAnswers(ItemRequest entity) {
         ItemRequestDto result = mapper.toDto(entity);
-        result.setItems(findAnswers(result.getDescription()));
+        result.setItems(findAnswers(result.getId()));
         return result;
     }
 

@@ -15,5 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             """)
     Boolean isItemAvailable(@Param("itemId") Long itemId);
 
-    List<Item> findByDescriptionContaining(String description);
+    List<Item> findByRequestId(Long requestId);
+
 }
