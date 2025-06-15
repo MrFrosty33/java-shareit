@@ -5,15 +5,15 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import java.util.List;
 
 public interface ItemRequestService {
-    ItemRequestDto get(Long id);
+    ItemRequestDto get(Long userId);
 
-    List<ItemRequestDto> getAll();
+    ItemRequestDto getById(Long userId, Long requestId);
+
+    List<ItemRequestDto> getAllByUserId(Long userId);
 
     ItemRequestDto save(ItemRequestDto itemRequest);
 
-    ItemRequestDto update(ItemRequestDto itemRequest);
-
-    void delete(Long id);
-
-    void deleteAll();
+//    void delete(Long id);
+//
+//    void deleteAll();
 }

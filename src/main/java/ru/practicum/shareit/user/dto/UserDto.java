@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.OnCreate;
-import ru.practicum.shareit.user.OnUpdate;
+import ru.practicum.shareit.markers.OnCreate;
+import ru.practicum.shareit.markers.OnUpdate;
 
 @Data
 @Builder(toBuilder = true)

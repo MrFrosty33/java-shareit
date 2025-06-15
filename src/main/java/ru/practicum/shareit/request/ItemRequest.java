@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.user.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,5 +33,5 @@ public class ItemRequest {
     private User requester;
 
     @Column(name = "created_at")
-    private LocalDate created;
+    private LocalDateTime created;
 }

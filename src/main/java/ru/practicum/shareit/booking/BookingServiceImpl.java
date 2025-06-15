@@ -18,7 +18,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.utilities.DataEnricher;
-import ru.practicum.shareit.utilities.Validator;
+import ru.practicum.shareit.utilities.ExistenceValidator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,14 +26,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingServiceImpl implements BookingService, Validator<Booking>, DataEnricher<BookingDto, Booking> {
+public class BookingServiceImpl implements BookingService, ExistenceValidator<Booking>, DataEnricher<BookingDto, Booking> {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final DataEnricher<ItemDto, Item> itemDataEnricher;
     private final DataEnricher<UserDto, User> userDataEnricher;
-    private final Validator<User> userValidator;
-    private final Validator<Item> itemValidator;
+    private final ExistenceValidator<User> userValidator;
+    private final ExistenceValidator<Item> itemValidator;
     private final BookingMapper bookingMapper;
 
     @Override

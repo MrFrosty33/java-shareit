@@ -9,14 +9,14 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.utilities.DataEnricher;
-import ru.practicum.shareit.utilities.Validator;
+import ru.practicum.shareit.utilities.ExistenceValidator;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService, Validator<User>, DataEnricher<UserDto, User> {
+public class UserServiceImpl implements UserService, ExistenceValidator<User>, DataEnricher<UserDto, User> {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 

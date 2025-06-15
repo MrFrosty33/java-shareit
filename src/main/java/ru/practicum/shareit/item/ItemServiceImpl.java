@@ -18,7 +18,7 @@ import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.utilities.DataEnricher;
-import ru.practicum.shareit.utilities.Validator;
+import ru.practicum.shareit.utilities.ExistenceValidator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,13 +27,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemServiceImpl implements ItemService, Validator<Item>, DataEnricher<ItemDto, Item> {
+public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, DataEnricher<ItemDto, Item> {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemRequestRepository requestRepository;
     private final UserRepository userRepository;
-    private final Validator<User> userValidator;
+    private final ExistenceValidator<User> userValidator;
     private final CommentMapper commentMapper;
     private final ItemMapper itemMapper;
 

@@ -9,7 +9,8 @@ import lombok.Data;
 import ru.practicum.shareit.markers.OnCreate;
 import ru.practicum.shareit.markers.OnUpdate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
@@ -27,5 +28,7 @@ public class ItemRequestDto {
             groups = {OnCreate.class, OnUpdate.class})
     private Long requesterId;
 
-    private LocalDate created;
+    private Set<ItemRequestAnswer> answers;
+
+    private LocalDateTime created;
 }

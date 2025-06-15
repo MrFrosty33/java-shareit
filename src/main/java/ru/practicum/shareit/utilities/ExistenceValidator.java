@@ -1,5 +1,5 @@
 package ru.practicum.shareit.utilities;
 
-public interface Validator<T> {
+public interface ExistenceValidator<T> {
     void validateExists(Long id);
 }
