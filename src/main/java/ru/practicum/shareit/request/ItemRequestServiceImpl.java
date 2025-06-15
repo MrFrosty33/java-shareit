@@ -32,23 +32,34 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
     private final ItemRequestMapper mapper;
 
     @Override
-    public ItemRequestDto get(Long userId) {
+    public List<ItemRequestDto> get(Long userId) {
         userValidator.validateExists(userId);
-        return null;
+        List<ItemRequestDto> result = requestRepository.findByRequesterIdNotOrderByCreatedAsc(userId).stream()
+                .map(this::getDtoWithAnswers)
+                .toList();
+        log.info("User с id: {} получил список чужих ItemRequest. " +
+                "Список отсортирован по дате от новых к старым", userId);
+        return result;
     }
 
     @Override
     public ItemRequestDto getById(Long userId, Long requestId) {
         userValidator.validateExists(userId);
         validateExists(requestId);
-        return null;
+        ItemRequestDto result = getDtoWithAnswers(requestRepository.findById(requestId).get());
+        log.info("User с id: {}, посмотрел информацию о ItemRequest с id: {}", userId, requestId);
+        return result;
     }
 
     @Override
     public List<ItemRequestDto> getAllByUserId(Long userId) {
         userValidator.validateExists(userId);
-        // отсортировать ASC
-        return List.of();
+        List<ItemRequestDto> result = requestRepository.findByRequesterIdOrderByCreatedAsc(userId).stream()
+                .map(this::getDtoWithAnswers)
+                .toList();
+        log.info("Получен список всех ItemRequest вместе с найденными желаемыми вещами" +
+                " у User с id: {}. Список отсортирован по дате от новых к старым", userId);
+        return result;
     }
 
     @Override
@@ -68,12 +79,13 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
     }
 
     private Set<ItemRequestAnswer> findAnswers(String itemDescription) {
-        List<Item> queryResult = itemRepository.findByDescription(itemDescription);
+        List<Item> queryResult = itemRepository.findByDescriptionContaining(itemDescription);
         log.info("Был найден список предметов по описанию: {}, преобразован в Set<ItemRequestAnswer> и передан далее",
                 itemDescription);
         return queryResult.stream().map(mapper::mapAnswerFromItemEntity).collect(Collectors.toSet());
 
 //         если надо возвращать только доступные
+//         (а лучше вообще через другой запрос к БД, чтобы не грузить лишнее)
 //        return queryResult.stream()
 //                .filter(Item::getAvailable)
 //                .map(mapper::mapAnswerFromItemEntity)

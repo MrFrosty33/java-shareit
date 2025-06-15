@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder(toBuilder = true)
 public class ItemRequestAnswer {
-    private Long itemId;
-    private String itemName;
+    private Long id;
+    private String name;
     private Long ownerId;
     private boolean available;
 }

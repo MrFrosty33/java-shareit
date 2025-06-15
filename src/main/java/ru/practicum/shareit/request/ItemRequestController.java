@@ -26,7 +26,7 @@ public class ItemRequestController {
     private final ItemRequestService requestService;
 
     @GetMapping
-    public ItemRequestDto get(@RequestHeader("X-Sharer-User-Id")
+    public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id")
                               @NotNull(message = "ошибка валидации, userId не может быть null")
                               @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                               Long userId) {
