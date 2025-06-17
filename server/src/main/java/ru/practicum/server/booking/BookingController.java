@@ -1,7 +1,5 @@
 package ru.practicum.server.booking;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,33 +28,28 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingDto get(@PathVariable
-                          @NotNull(message = "ошибка валидации, id не может быть null")
-                          @Positive(message = "ошибка валидации, id должно быть положительным числом")
                           Long bookingId,
                           @RequestHeader("X-Sharer-User-Id")
-                          @Positive(message = "ошибка валидации, bookerOrItemOwnerId должно быть положительным числом")
                           Long bookerOrItemOwnerId) {
         return bookingService.get(bookingId, bookerOrItemOwnerId);
     }
 
     @GetMapping
     public List<BookingDto> getAllByStateAndBookerId(
-            @RequestParam(name = "state", required = false, defaultValue = "ALL")
-            String param,
+            @RequestParam
+            String state,
             @RequestHeader("X-Sharer-User-Id")
-            @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
             Long bookerId) {
-        return bookingService.getAllByStateAndBookerId(State.stateValue(param), bookerId);
+        return bookingService.getAllByStateAndBookerId(State.stateValue(state), bookerId);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllByStateAndOwnerId(
-            @RequestParam(name = "state", required = false, defaultValue = "ALL")
-            String param,
+            @RequestParam
+            String state,
             @RequestHeader("X-Sharer-User-Id")
-            @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
             Long ownerId) {
-        return bookingService.getAllByStateAndOwnerId(State.stateValue(param), ownerId);
+        return bookingService.getAllByStateAndOwnerId(State.stateValue(state), ownerId);
     }
 
     @PostMapping
@@ -64,26 +57,17 @@ public class BookingController {
                            @RequestBody
                                BookingCreate bookingCreate,
                            @RequestHeader("X-Sharer-User-Id")
-                           @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
                            Long bookerId) {
         return bookingService.save(bookingCreate, bookerId);
     }
 
-    @PatchMapping("{bookingId}")
+    @PatchMapping("/{bookingId}")
     public BookingDto approveBooking(@PathVariable
-                                     @NotNull(message = "ошибка валидации, id не может быть null")
-                                     @Positive(message = "ошибка валидации, id должно быть положительным числом")
                                      Long bookingId,
                                      @RequestHeader("X-Sharer-User-Id")
-                                     @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
                                      Long ownerId,
                                      @RequestParam
-                                     @NotNull(message = "ошибка валидации, approved не может быть null")
-                                         Boolean approved) {
+                                     Boolean approved) {
         return bookingService.approveBooking(bookingId, ownerId, approved);
     }
-
-    // update & delete пока не требуются?
-
-
 }

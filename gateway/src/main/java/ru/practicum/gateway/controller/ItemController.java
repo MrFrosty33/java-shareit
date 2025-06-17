@@ -62,7 +62,7 @@ public class ItemController {
                 ItemDto.class
         );
 
-        log.info("ItemController: ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
@@ -85,7 +85,7 @@ public class ItemController {
                 }
         );
 
-        log.info("ItemController: ResponseEntity<List<ItemDto>> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<List<ItemDto>> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
@@ -112,7 +112,7 @@ public class ItemController {
                 }
         );
 
-        log.info("ItemController: ResponseEntity<List<ItemDto>> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<List<ItemDto>> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
@@ -135,7 +135,7 @@ public class ItemController {
                 entity,
                 ItemDto.class
         );
-        log.info("ItemController: ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
@@ -162,7 +162,7 @@ public class ItemController {
                 entity,
                 CommentDto.class
         );
-        log.info("ItemController: ResponseEntity<CommentDto> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<CommentDto> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
@@ -187,7 +187,7 @@ public class ItemController {
                 entity,
                 ItemDto.class
         );
-        log.info("ItemController: ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("ItemController: Получил ResponseEntity<ItemDto> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;
