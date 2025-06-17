@@ -19,6 +19,7 @@
 	<modules>
 		<module>server</module>
 		<module>gateway</module>
+		<module>models</module>
 	</modules>
 
 	<properties>

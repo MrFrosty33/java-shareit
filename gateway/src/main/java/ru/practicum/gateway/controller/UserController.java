@@ -3,6 +3,7 @@ package ru.practicum.gateway.controller;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping(path = "/users")
 @Validated
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -42,6 +44,7 @@ public class UserController {
 
     @PostMapping
     public UserDto save(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
+        log.info("Начал выполнение метода save");
         return userService.save(userDto);
     }
 
