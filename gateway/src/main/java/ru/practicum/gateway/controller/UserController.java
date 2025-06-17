@@ -22,7 +22,7 @@ import ru.practicum.models.user.UserDto;
 public class UserController {
     private final RestTemplate restTemplate;
 
-    @Value("${SHAREIT_SERVER_URL}")
+    @Value("${shareit.server-url}")
     private String serverUrl;
 
 //    @GetMapping("/{id}")
