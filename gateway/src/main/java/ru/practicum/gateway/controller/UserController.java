@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.server.markers.OnCreate;
-import ru.practicum.server.markers.OnUpdate;
-import ru.practicum.server.user.UserService;
-import ru.practicum.server.user.dto.UserDto;
+import ru.practicum.models.markers.OnCreate;
+import ru.practicum.models.user.UserDto;
 
 import java.util.List;
 
@@ -27,7 +25,6 @@ import java.util.List;
 @Validated
 @Slf4j
 public class UserController {
-    private final UserService userService;
 
     @GetMapping("/{id}")
     public UserDto get(@PathVariable

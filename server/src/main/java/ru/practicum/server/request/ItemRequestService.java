@@ -1,7 +1,7 @@
 package ru.practicum.server.request;
 
-import ru.practicum.server.request.dto.CreateItemRequestDto;
-import ru.practicum.server.request.dto.ItemRequestDto;
+import ru.practicum.models.request.CreateItemRequestDto;
+import ru.practicum.models.request.ItemRequestDto;
 
 import java.util.List;
 

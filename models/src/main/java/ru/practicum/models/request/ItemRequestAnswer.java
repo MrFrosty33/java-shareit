@@ -1,4 +1,4 @@
-package ru.practicum.server.request.dto;
+package ru.practicum.models.request;
 
 import lombok.Builder;
 import lombok.Data;

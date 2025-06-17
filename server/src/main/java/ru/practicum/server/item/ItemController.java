@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.server.item.dto.CommentDto;
-import ru.practicum.server.item.dto.ItemDto;
-import ru.practicum.server.markers.OnCreate;
-import ru.practicum.server.markers.OnUpdate;
+import ru.practicum.models.item.CommentDto;
+import ru.practicum.models.item.ItemDto;
+import ru.practicum.models.markers.OnCreate;
+import ru.practicum.models.markers.OnUpdate;
 
 import java.util.List;
 

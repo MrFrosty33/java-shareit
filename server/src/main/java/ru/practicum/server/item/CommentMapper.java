@@ -1,8 +1,8 @@
-package ru.practicum.server.item.dto;
+package ru.practicum.server.item;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.server.item.Comment;
+import ru.practicum.models.item.CommentDto;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {

@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.server.booking.dto.BookingCreate;
-import ru.practicum.server.booking.dto.BookingDto;
-import ru.practicum.server.markers.OnCreate;
+import ru.practicum.models.booking.BookingCreate;
+import ru.practicum.models.booking.BookingDto;
+import ru.practicum.models.booking.State;
+import ru.practicum.models.markers.OnCreate;
 
 import java.util.List;
 

@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.models.user.UserDto;
 import ru.practicum.server.exception.ConflictException;
 import ru.practicum.server.exception.NotFoundException;
-import ru.practicum.server.user.dto.UserDto;
-import ru.practicum.server.user.dto.UserMapper;
 import ru.practicum.server.utilities.DataEnricher;
 import ru.practicum.server.utilities.ExistenceValidator;
 

@@ -1,4 +1,4 @@
-package ru.practicum.server.booking.dto;
+package ru.practicum.models.booking;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -6,9 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.server.booking.Status;
-import ru.practicum.server.markers.OnCreate;
-import ru.practicum.server.markers.OnUpdate;
+import ru.practicum.models.markers.OnCreate;
+import ru.practicum.models.markers.OnUpdate;
 
 import java.time.LocalDateTime;
 

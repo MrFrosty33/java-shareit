@@ -1,4 +1,4 @@
-package ru.practicum.server.item.dto;
+package ru.practicum.models.item;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,8 +6,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.server.markers.OnCreate;
-import ru.practicum.server.markers.OnUpdate;
+import ru.practicum.models.markers.OnCreate;
+import ru.practicum.models.markers.OnUpdate;
 
 import java.util.List;
 

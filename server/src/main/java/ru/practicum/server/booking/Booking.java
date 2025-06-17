@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.models.booking.Status;
 import ru.practicum.server.item.Item;
 import ru.practicum.server.user.User;
 

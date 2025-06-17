@@ -1,9 +1,11 @@
-package ru.practicum.server.request.dto;
+package ru.practicum.server.request;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.practicum.models.request.CreateItemRequestDto;
+import ru.practicum.models.request.ItemRequestAnswer;
+import ru.practicum.models.request.ItemRequestDto;
 import ru.practicum.server.item.Item;
-import ru.practicum.server.request.ItemRequest;
 
 @Mapper(componentModel = "spring")
 public interface ItemRequestMapper {

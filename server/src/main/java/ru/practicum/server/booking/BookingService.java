@@ -1,7 +1,8 @@
 package ru.practicum.server.booking;
 
-import ru.practicum.server.booking.dto.BookingCreate;
-import ru.practicum.server.booking.dto.BookingDto;
+import ru.practicum.models.booking.BookingCreate;
+import ru.practicum.models.booking.BookingDto;
+import ru.practicum.models.booking.State;
 
 import java.util.List;
 

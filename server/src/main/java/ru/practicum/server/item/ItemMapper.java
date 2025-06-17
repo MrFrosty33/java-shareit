@@ -1,8 +1,8 @@
-package ru.practicum.server.item.dto;
+package ru.practicum.server.item;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.server.item.Item;
+import ru.practicum.models.item.ItemDto;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {

@@ -1,9 +1,10 @@
-package ru.practicum.server.booking.dto;
+package ru.practicum.server.booking;
 
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.server.booking.Booking;
+import ru.practicum.models.booking.BookingCreate;
+import ru.practicum.models.booking.BookingDto;
 
 @Mapper(componentModel = "spring")
 public interface BookingMapper {

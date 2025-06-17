@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.server.markers.OnCreate;
-import ru.practicum.server.request.dto.CreateItemRequestDto;
-import ru.practicum.server.request.dto.ItemRequestDto;
+import ru.practicum.models.markers.OnCreate;
+import ru.practicum.models.request.CreateItemRequestDto;
+import ru.practicum.models.request.ItemRequestDto;
 
 import java.util.List;
 

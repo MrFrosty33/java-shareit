@@ -1,4 +1,4 @@
-package ru.practicum.server.item.dto;
+package ru.practicum.models.item;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;

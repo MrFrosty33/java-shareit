@@ -1,10 +1,9 @@
-package ru.practicum.server.booking.dto;
+package ru.practicum.models.booking;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.server.booking.Status;
-import ru.practicum.server.item.dto.ItemDto;
-import ru.practicum.server.user.dto.UserDto;
+import ru.practicum.models.item.ItemDto;
+import ru.practicum.models.user.UserDto;
 
 import java.time.LocalDateTime;
 

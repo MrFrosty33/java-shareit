@@ -3,6 +3,7 @@ package ru.practicum.server.booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import ru.practicum.models.booking.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;

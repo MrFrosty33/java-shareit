@@ -1,9 +1,7 @@
-package ru.practicum.server.booking;
+package ru.practicum.models.booking;
 
-import lombok.extern.slf4j.Slf4j;
-import ru.practicum.server.exception.BadRequestParamException;
+import ru.practicum.models.exception.BadRequestParamException;
 
-@Slf4j
 public enum State {
     ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED;
 
@@ -32,8 +30,7 @@ public enum State {
                 return State.REJECTED;
             }
             default -> {
-                log.info("Попытка получить State.enum из неконвертируемого значения: {}", string);
-                throw new BadRequestParamException("");
+                throw new BadRequestParamException("Неконвертируемое значение State");
             }
         }
     }

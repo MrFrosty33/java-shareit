@@ -1,7 +1,7 @@
-package ru.practicum.server.user.dto;
+package ru.practicum.server.user;
 
 import org.mapstruct.Mapper;
-import ru.practicum.server.user.User;
+import ru.practicum.models.user.UserDto;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

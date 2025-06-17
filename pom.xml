@@ -17,9 +17,10 @@
 	<name>ShareIt</name>
 
 	<modules>
+		<!-- порядок очень важен!!! -->
+		<module>models</module>
 		<module>server</module>
 		<module>gateway</module>
-		<module>models</module>
 	</modules>
 
 	<properties>
