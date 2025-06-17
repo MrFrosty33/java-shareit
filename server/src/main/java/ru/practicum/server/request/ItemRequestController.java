@@ -2,7 +2,6 @@ package ru.practicum.server.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping(path = "/requests")
-@Validated
 public class ItemRequestController {
     private final ItemRequestService requestService;
 
@@ -30,7 +28,8 @@ public class ItemRequestController {
     @GetMapping("/{requestId}")
     public ItemRequestDto getByRequestId(@RequestHeader("X-Sharer-User-Id")
                                              Long userId,
-                                         @PathVariable(name = "requestId") Long requestId) {
+                                         @PathVariable(name = "requestId")
+                                             Long requestId) {
         return requestService.getByRequestId(userId, requestId);
     }
 
@@ -42,7 +41,8 @@ public class ItemRequestController {
     @PostMapping
     public CreateItemRequestDto save(@RequestHeader("X-Sharer-User-Id")
                                          Long userId,
-                                     @RequestBody CreateItemRequestDto request) {
+                                     @RequestBody
+                                         CreateItemRequestDto request) {
         return requestService.save(userId, request);
     }
 }

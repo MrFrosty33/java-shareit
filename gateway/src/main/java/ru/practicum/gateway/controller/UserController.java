@@ -109,8 +109,14 @@ public class UserController {
         log.info("UserController: Начал выполнение метода delete");
         String url = serverUrl + "/users/" + id;
 
-        restTemplate.delete(url);
-        log.info("UserController: Выполнил метод delete с id: {}", id);
+        ResponseEntity<Void> result = restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                null,
+                Void.class
+        );
+
+        log.info("UserController: Выполнил метод delete с id: {}. Status: {}", id, result.getStatusCode());
     }
 
     @DeleteMapping
@@ -118,7 +124,13 @@ public class UserController {
         log.info("UserController: Начал выполнение метода deleteAll");
         String url = serverUrl + "/users";
 
-        restTemplate.delete(url);
-        log.info("UserController: Выполнил метод deleteAll");
+        ResponseEntity<Void> result = restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                null,
+                Void.class
+        );
+
+        log.info("UserController: Выполнил метод deleteAll. Status: {}", result.getStatusCode());
     }
 }

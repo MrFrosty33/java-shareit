@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.gateway.utils.ShareItHeadersBuilder;
 import ru.practicum.models.markers.OnCreate;
 import ru.practicum.models.request.CreateItemRequestDto;
 import ru.practicum.models.request.ItemRequestDto;
@@ -33,6 +33,7 @@ import java.util.List;
 @Slf4j
 public class ItemRequestController {
     private final RestTemplate restTemplate;
+    private final ShareItHeadersBuilder headersBuilder;
 
     @Value("${shareit.server-url}")
     private String serverUrl;
@@ -45,10 +46,7 @@ public class ItemRequestController {
         log.info("ItemRequestController: Начал выполнение метода getAllByUserId");
         String url = serverUrl + "/requests";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
+        HttpEntity<Void> entity = new HttpEntity<>(headersBuilder.getUserIdHeader(userId));
         ResponseEntity<List<ItemRequestDto>> result = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -72,10 +70,8 @@ public class ItemRequestController {
         log.info("ItemRequestController: Начал выполнение метода getByRequestId");
         String url = serverUrl + "/requests/" + requestId;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
+        HttpEntity<Void> entity = new HttpEntity<>(headersBuilder.getUserIdHeader(userId));
         ResponseEntity<ItemRequestDto> result = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -97,10 +93,8 @@ public class ItemRequestController {
         log.info("ItemRequestController: Начал выполнение метода getOthersRequests");
         String url = serverUrl + "/requests/all";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
+        HttpEntity<Void> entity = new HttpEntity<>(headersBuilder.getUserIdHeader(userId));
         ResponseEntity<List<ItemRequestDto>> result = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -124,10 +118,7 @@ public class ItemRequestController {
         log.info("ItemRequestController: Начал выполнение метода save");
         String url = serverUrl + "/requests";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Sharer-User-Id", String.valueOf(userId));
-        HttpEntity<CreateItemRequestDto> entity = new HttpEntity<>(request, headers);
-
+        HttpEntity<CreateItemRequestDto> entity = new HttpEntity<>(request, headersBuilder.getUserIdHeader(userId));
         ResponseEntity<CreateItemRequestDto> result = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
