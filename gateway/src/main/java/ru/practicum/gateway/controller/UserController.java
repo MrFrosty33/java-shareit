@@ -64,7 +64,7 @@ public class UserController {
                 }
         );
 
-        log.info("UserController: Получил ResponseEntity<UserDto> от сервера по ссылке: {}. Status: {}, Body: {}",
+        log.info("UserController: Получил ResponseEntity<List<UserDto>> от сервера по ссылке: {}. Status: {}, Body: {}",
                 url, result.getStatusCode(), result.getBody());
 
         return result;

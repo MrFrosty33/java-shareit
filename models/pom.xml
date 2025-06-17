@@ -21,25 +21,29 @@
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
         <maven-compiler-pligun.version>3.14.0</maven-compiler-pligun.version>
+        <jackson-datatype-jsr310.version>2.19.1</jackson-datatype-jsr310.version>
     </properties>
 
 
     <dependencies>
-        <!-- Jakarta Validation API -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation-api.version}</version>
         </dependency>
 
-        <!-- Hibernate Validator (реализация Jakarta Validation) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-datatype-jsr310.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
 
-        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
