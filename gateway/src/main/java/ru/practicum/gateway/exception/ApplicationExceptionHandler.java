@@ -1,4 +1,4 @@
-package ru.practicum.server.exception;
+package ru.practicum.gateway.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "ru.practicum.server")
+@RestControllerAdvice(basePackages = "ru.practicum.gateway")
 public class ApplicationExceptionHandler {
 
     @ExceptionHandler
