@@ -19,6 +19,7 @@ import ru.practicum.server.utilities.DataEnricher;
 import ru.practicum.server.utilities.ExistenceValidator;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,10 +104,12 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
     public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
         validateExists(itemId);
         userValidator.validateExists(userId);
+        log.warn("Лог 1 тест");
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Vienna"));
         Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
 
+        log.warn("Лог 2- похоже ошибка из-за несоответствия времени в контейнере");
         if (booking != null && booking.getBooker().getId().equals(userId)) {
             Comment comment = getCommentEntity(commentDto);
             comment.setItem(booking.getItem());
@@ -117,7 +120,8 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
             log.info("Был добавлен Comment с id: {}", result.getId());
             return result;
         } else if (booking.getStatus().equals(Status.APPROVED)) {
-            throw new InternalException("Для прохождения тестов");
+            log.info("Попытка добавить Comment, но booking.status: APPROVED");
+            throw new InternalException("Невозможно добавить комментарий, Status = Approved");
         } else {
             log.info("Попытка добавить Comment, но userId: {} не брал эту вещь в аренду",
                     userId);
