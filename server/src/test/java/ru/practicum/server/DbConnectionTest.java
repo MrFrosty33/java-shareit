@@ -21,7 +21,7 @@ public class DbConnectionTest {
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData meta = conn.getMetaData();
             assertEquals("H2", meta.getDatabaseProductName());
-            assertEquals("jdbc:h2:file:./db/share-it", meta.getURL());
+            assertEquals("jdbc:h2:mem:testDB", meta.getURL());
         }
     }
 }
