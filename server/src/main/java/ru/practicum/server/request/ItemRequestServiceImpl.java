@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.models.request.CreateItemRequestDto;
 import ru.practicum.models.request.ItemRequestAnswer;
 import ru.practicum.models.request.ItemRequestDto;
+import ru.practicum.models.system.LocalDateTimeProvider;
 import ru.practicum.server.exception.InternalServerException;
 import ru.practicum.server.exception.NotFoundException;
 import ru.practicum.server.item.Item;
@@ -15,7 +16,6 @@ import ru.practicum.server.user.User;
 import ru.practicum.server.user.UserRepository;
 import ru.practicum.server.utilities.ExistenceValidator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,7 +70,7 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
         userValidator.validateExists(requesterId);
         ItemRequestDto dto = mapper.mapDtoFromCreateRequest(itemRequest);
         dto.setRequesterId(requesterId);
-        dto.setCreated(LocalDateTime.now());
+        dto.setCreated(LocalDateTimeProvider.getLocalDateTime());
 
         CreateItemRequestDto result = mapper.mapCreateRequestFromEntity(requestRepository.save(getEntity(dto)));
         log.info("Сохранён ItemRequest с id: {}", result.getId());

@@ -10,6 +10,7 @@ import ru.practicum.models.booking.BookingDto;
 import ru.practicum.models.booking.State;
 import ru.practicum.models.booking.Status;
 import ru.practicum.models.item.ItemDto;
+import ru.practicum.models.system.LocalDateTimeProvider;
 import ru.practicum.models.user.UserDto;
 import ru.practicum.server.exception.BadRequestParamException;
 import ru.practicum.server.exception.ConflictException;
@@ -66,7 +67,7 @@ public class BookingServiceImpl implements BookingService, ExistenceValidator<Bo
         userValidator.validateExists(bookerId);
 
         List<BookingDto> result;
-        LocalDateTime dateNow = LocalDateTime.now();
+        LocalDateTime dateNow = LocalDateTimeProvider.getLocalDateTime();
 
         switch (state) {
             case ALL -> {
@@ -114,7 +115,7 @@ public class BookingServiceImpl implements BookingService, ExistenceValidator<Bo
         }
 
         List<BookingDto> result;
-        LocalDateTime dateNow = LocalDateTime.now();
+        LocalDateTime dateNow = LocalDateTimeProvider.getLocalDateTime();
 
         switch (state) {
             case ALL -> {

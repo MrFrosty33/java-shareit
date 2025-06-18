@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.models.booking.Status;
 import ru.practicum.models.item.CommentDto;
 import ru.practicum.models.item.ItemDto;
+import ru.practicum.models.system.LocalDateTimeProvider;
 import ru.practicum.server.booking.Booking;
 import ru.practicum.server.booking.BookingRepository;
 import ru.practicum.server.exception.ConflictException;
@@ -19,7 +20,6 @@ import ru.practicum.server.utilities.DataEnricher;
 import ru.practicum.server.utilities.ExistenceValidator;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +106,7 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
         userValidator.validateExists(userId);
         log.warn("Лог 1 тест");
 
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Vienna"));
+        LocalDateTime now = LocalDateTimeProvider.getLocalDateTime();
         Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
 
         log.warn("Лог 2- похоже ошибка из-за несоответствия времени в контейнере");
