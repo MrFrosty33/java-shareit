@@ -198,6 +198,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("test.1"))
                 .andExpect(jsonPath("$.email").value("t.1@example.com"));
+
+        verify(restTemplate, times(1))
+                .postForEntity(eq(url + "/users"), eq(u), eq(UserDto.class));
     }
 
     @Test

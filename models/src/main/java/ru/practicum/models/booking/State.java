@@ -1,7 +1,5 @@
 package ru.practicum.models.booking;
 
-import ru.practicum.models.exception.BadRequestParamException;
-
 public enum State {
     ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED;
 
@@ -30,7 +28,7 @@ public enum State {
                 return State.REJECTED;
             }
             default -> {
-                throw new BadRequestParamException("Неконвертируемое значение State");
+                return null;
             }
         }
     }

@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.practicum.gateway.exception.BadRequestParamException;
 import ru.practicum.gateway.utils.ShareItHeadersBuilder;
 import ru.practicum.models.booking.BookingCreate;
 import ru.practicum.models.booking.BookingDto;
+import ru.practicum.models.booking.State;
 import ru.practicum.models.markers.OnCreate;
 
 import java.util.List;
@@ -75,6 +77,11 @@ public class BookingController {
             @Positive(message = "ошибка валидации, bookerId должно быть положительным числом")
             Long bookerId) {
         log.info("BookingController: Начал выполнение метода getAllByStateAndBookerId");
+
+        if (State.stateValue(param) == null) {
+            throw new BadRequestParamException("ошибка валидации, неконвертируемое значение state");
+        }
+
         String url = UriComponentsBuilder
                 .fromHttpUrl(serverUrl + "/bookings")
                 .queryParam("state", param)
@@ -104,6 +111,11 @@ public class BookingController {
             @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")
             Long ownerId) {
         log.info("BookingController: Начал выполнение метода getAllByStateAndOwnerId");
+
+        if (State.stateValue(param) == null) {
+            throw new BadRequestParamException("ошибка валидации, неконвертируемое значение state");
+        }
+
         String url = UriComponentsBuilder
                 .fromHttpUrl(serverUrl + "/bookings/owner")
                 .queryParam("state", param)
