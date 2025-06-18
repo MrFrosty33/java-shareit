@@ -99,7 +99,7 @@ public class ItemController {
                                                 Long userId) {
         log.info("ItemController: Начал выполнение метода search");
         String url = UriComponentsBuilder
-                .fromHttpUrl(serverUrl + "items/search")
+                .fromHttpUrl(serverUrl + "/items/search")
                 .queryParam("text", text)
                 .toUriString();
 

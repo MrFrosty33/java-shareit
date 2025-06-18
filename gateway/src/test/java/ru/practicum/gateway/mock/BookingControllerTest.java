@@ -356,7 +356,6 @@ public class BookingControllerTest {
     void testSaveInvalidEnd_shouldReturnBadRequest() throws Exception {
         String content = """
                 {
-                  "id": 1,
                   "itemId": 1,
                   "start": "2025-06-18T14:15:16",
                   "end": "1999-06-19T14:15:16",
@@ -382,7 +381,6 @@ public class BookingControllerTest {
     void testSaveInvalidStart_shouldReturnBadRequest() throws Exception {
         String content = """
                 {
-                  "id": 1,
                   "itemId": 1,
                   "start": "1999-06-18T14:15:16",
                   "end": "2025-06-19T14:15:16",
@@ -410,7 +408,6 @@ public class BookingControllerTest {
         // хоть это и странно, что приложение вообще позволяет бронировать вещь через десятки, сотни лет xD
         String content = """
                 {
-                  "id": 1,
                   "itemId": 1,
                   "start": "2125-06-18T14:15:16",
                   "end": "2125-06-19T14:15:16",
