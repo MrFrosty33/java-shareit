@@ -20,7 +20,7 @@ public class ItemRequestDtoJsonTest {
     private JacksonTester<ItemRequestDto> json;
 
     @Test
-    void shouldSerializeAllFields() throws Exception {
+    void testSerialize() throws Exception {
         LocalDateTime time = LocalDateTime.of(2025, 6, 18, 14, 14, 0);
         Set<ItemRequestAnswer> items = Set.of(
                 ItemRequestAnswer.builder()
@@ -63,7 +63,7 @@ public class ItemRequestDtoJsonTest {
     }
 
     @Test
-    void shouldDeserializeFromJson() throws Exception {
+    void testDeserialize() throws Exception {
         String content = """
                 {
                     "id": 1,
