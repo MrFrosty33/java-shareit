@@ -66,7 +66,9 @@ public class ItemRequestController {
                                                          @NotNull(message = "ошибка валидации, userId не может быть null")
                                                          @Positive(message = "ошибка валидации, userId должно быть положительным числом")
                                                          Long userId,
-                                                         @PathVariable(name = "requestId") Long requestId) {
+                                                         @PathVariable(name = "requestId")
+                                                         @Positive(message = "ошибка валидации, requestId должно быть положительным числом")
+                                                         Long requestId) {
         log.info("ItemRequestController: Начал выполнение метода getByRequestId");
         String url = serverUrl + "/requests/" + requestId;
 
