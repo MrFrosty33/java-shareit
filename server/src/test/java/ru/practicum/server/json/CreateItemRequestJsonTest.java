@@ -18,12 +18,12 @@ public class CreateItemRequestJsonTest {
 
     @Test
     void testSerialize() throws Exception {
-        LocalDateTime now = LocalDateTime.of(2025, 6, 18, 14, 14, 0);
+        LocalDateTime time = LocalDateTime.of(2025, 6, 18, 14, 14, 0);
         CreateItemRequestDto dto = CreateItemRequestDto.builder()
                 .id(1L)
                 .requesterId(13L)
                 .description("test")
-                .created(now)
+                .created(time)
                 .build();
 
         JsonContent<CreateItemRequestDto> result = json.write(dto);
