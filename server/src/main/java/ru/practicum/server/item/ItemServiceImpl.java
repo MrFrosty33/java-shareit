@@ -104,12 +104,10 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
     public CommentDto addComment(CommentDto commentDto, Long itemId, Long userId) {
         validateExists(itemId);
         userValidator.validateExists(userId);
-        log.warn("Лог 1 тест");
 
         LocalDateTime now = LocalDateTimeProvider.getLocalDateTime();
         Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
 
-        log.warn("Лог 2- похоже ошибка из-за несоответствия времени в контейнере");
         if (booking != null && booking.getBooker().getId().equals(userId)) {
             Comment comment = getCommentEntity(commentDto);
             comment.setItem(booking.getItem());
