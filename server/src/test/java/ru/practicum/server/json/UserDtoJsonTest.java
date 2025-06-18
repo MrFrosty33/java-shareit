@@ -9,6 +9,7 @@ import ru.practicum.models.user.UserDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @JsonTest
 public class UserDtoJsonTest {
 

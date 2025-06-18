@@ -69,6 +69,7 @@ public class ApplicationExceptionHandler {
                 exceptionName, message);
         return new ErrorResponse(message);
     }
+
     // в последующих 3-х методах можно подумать над упрощением сообщения, чтобы оно не было несколько строк в длину
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

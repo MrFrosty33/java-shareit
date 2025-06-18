@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @JsonTest
 public class ItemDtoJsonTest {
     @Autowired

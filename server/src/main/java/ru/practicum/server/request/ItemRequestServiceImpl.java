@@ -103,8 +103,7 @@ public class ItemRequestServiceImpl implements ItemRequestService, ExistenceVali
         } else {
             log.info("Во время выполнения метода ItemRequestServiceImpl.getEntity(ItemRequestDto) " +
                     "произошла ошибка. requesterId == null");
-            throw new InternalServerException
-                    ("Ошибка: переданный DTO объект не содержит requesterId");
+            throw new InternalServerException("Ошибка: переданный DTO объект не содержит requesterId");
         }
         return result;
     }

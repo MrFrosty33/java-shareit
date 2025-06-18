@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @JsonTest
 public class CreateItemRequestJsonTest {
     @Autowired

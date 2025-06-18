@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @JsonTest
 public class ItemRequestDtoJsonTest {
     @Autowired
