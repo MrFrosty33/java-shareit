@@ -36,6 +36,7 @@ import static ru.practicum.gateway.util.JsonStringMapper.asJsonString;
 
 
 @WebMvcTest(UserController.class)
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @AutoConfigureMockMvc
 public class UserControllerTest {
     @Autowired

@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.practicum.gateway.util.JsonStringMapper.asJsonString;
 
 @WebMvcTest(ItemRequestController.class)
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @AutoConfigureMockMvc
 public class ItemRequestControllerTest {
     @Autowired
