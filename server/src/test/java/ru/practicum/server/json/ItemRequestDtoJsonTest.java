@@ -93,8 +93,8 @@ public class ItemRequestDtoJsonTest {
         assertThat(parsedDto.getId()).isEqualTo(1L);
         assertThat(parsedDto.getDescription()).isEqualTo("test");
         assertThat(parsedDto.getRequesterId()).isEqualTo(3L);
-        assertThat(parsedDto.getCreated()).
-                isEqualTo(LocalDateTime.of(2025, 6, 18, 14, 14, 0));
+        assertThat(parsedDto.getCreated())
+                .isEqualTo(LocalDateTime.of(2025, 6, 18, 14, 14, 0));
         assertThat(parsedDto.getItems()).hasSize(2);
     }
 }
