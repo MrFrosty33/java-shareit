@@ -117,14 +117,13 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
             CommentDto result = getCommentDto(commentRepository.save(comment));
             log.info("Был добавлен Comment с id: {}", result.getId());
             return result;
-        } else if (booking.getStatus().equals(Status.APPROVED)) {
+        } else if (booking != null && booking.getStatus().equals(Status.APPROVED)) {
             log.info("Попытка добавить Comment, но booking.status: APPROVED");
             throw new InternalException("Невозможно добавить комментарий, Status = Approved");
         } else {
             log.info("Попытка добавить Comment, но userId: {} не брал эту вещь в аренду",
                     userId);
-            throw new ConflictException("userId: " + userId +
-                    " не брал эту вещь в аренду");
+            throw new ConflictException("userId: " + userId + " не брал эту вещь в аренду");
         }
     }
 
