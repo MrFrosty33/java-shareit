@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.models.user.UserDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,19 +17,22 @@ public class UserDtoJsonTest {
 
     @Test
     void testSerialize() throws Exception {
-        UserDto dto = UserDto.builder().id(1L).name("U").email("t.1@example.com").build();
+        UserDto dto = UserDto.builder()
+                .id(1L)
+                .name("U")
+                .email("t.1@example.com")
+                .build();
 
-        assertThat(json.write(dto))
+        JsonContent<UserDto> result = json.write(dto);
+
+        assertThat(result)
                 .hasJsonPathNumberValue("$.id")
                 .hasJsonPathStringValue("$.name")
                 .hasJsonPathStringValue("$.email");
 
-        assertThat(json.write(dto).getJson())
-                .contains("\"id\":1");
-        assertThat(json.write(dto).getJson())
-                .contains("\"name\":\"U\"");
-        assertThat(json.write(dto).getJson())
-                .contains("\"email\":\"t.1@example.com\"");
+        assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
+        assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("U");
+        assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo("t.1@example.com");
     }
 
     @Test
