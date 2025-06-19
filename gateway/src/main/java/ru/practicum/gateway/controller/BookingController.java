@@ -105,7 +105,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public ResponseEntity<List<BookingDto>> getAllByStateAndOwnerId(
-            @RequestParam(name = "state", required = false, defaultValue = "ALL")
+            @RequestParam(name = "state", defaultValue = "ALL")
             String param,
             @RequestHeader("X-Sharer-User-Id")
             @Positive(message = "ошибка валидации, ownerId должно быть положительным числом")

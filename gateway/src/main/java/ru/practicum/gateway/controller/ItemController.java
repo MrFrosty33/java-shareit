@@ -141,7 +141,6 @@ public class ItemController {
         return result;
     }
 
-    // нужен ли тут RequestHeader, или же id автора берём из полученного Dto объекта?
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<CommentDto> addComment(@Validated @RequestBody CommentDto commentDto,
                                                  @PathVariable
