@@ -11,6 +11,7 @@ import ru.practicum.models.item.ItemDto;
 import ru.practicum.models.system.LocalDateTimeProvider;
 import ru.practicum.server.booking.Booking;
 import ru.practicum.server.booking.BookingRepository;
+import ru.practicum.server.exception.BadRequestParamException;
 import ru.practicum.server.exception.ConflictException;
 import ru.practicum.server.exception.NotFoundException;
 import ru.practicum.server.request.ItemRequestRepository;
@@ -106,7 +107,14 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
         userValidator.validateExists(userId);
 
         LocalDateTime now = LocalDateTimeProvider.getLocalDateTime();
-        Booking booking = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now).getFirst();
+        List<Booking> queryResult = bookingRepository.getLastBookingByBookerIdAndItemId(userId, itemId, now);
+        if (queryResult.isEmpty()) {
+            log.info("Попытка добавить Comment, но userId: {} не брал эту вещь в аренду",
+                    userId);
+            throw new BadRequestParamException("userId: " + userId + " не брал эту вещь в аренду");
+        }
+
+        Booking booking = queryResult.getFirst();
 
         if (booking != null && booking.getBooker().getId().equals(userId)) {
             Comment comment = getCommentEntity(commentDto);
@@ -119,11 +127,12 @@ public class ItemServiceImpl implements ItemService, ExistenceValidator<Item>, D
             return result;
         } else if (booking != null && booking.getStatus().equals(Status.APPROVED)) {
             log.info("Попытка добавить Comment, но booking.status: APPROVED");
-            throw new InternalException("Невозможно добавить комментарий, Status = Approved");
+            throw new BadRequestParamException("Невозможно добавить комментарий, Status = Approved");
         } else {
-            log.info("Попытка добавить Comment, но userId: {} не брал эту вещь в аренду",
-                    userId);
-            throw new ConflictException("userId: " + userId + " не брал эту вещь в аренду");
+            log.info("Невозможно добавить комментарий: " +
+                            "непредвиденное состояние бронирования. userId: {}, itemId: {}, bookingId: {}",
+                    userId, itemId, booking.getId());
+            throw new InternalException("Ошибка сервера: непредвиденное состояние бронирования");
         }
     }
 
