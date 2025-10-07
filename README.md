@@ -13,7 +13,8 @@ ShareIt is a multimodule backend service developed with layered architecture, de
 - **H2 / PostgreSQL** – Databases for development and production  
 - **Bean Validation** – Input validation  
 - **JUnit 5** – Unit and integration testing  
-- **Mockito** – Mocking framework for service-level testing  
+- **Mockito** – Mocking framework for service-level testing
+- **MapStruct** - Implementation of mappings
 - **Maven** – Project modules and dependency management  
 - **Docker / Docker Compose** – Containerized local deployment  
 
